@@ -25,9 +25,9 @@ namespace EnumSwitchAnalyzer {
     internal class EnumSwitchAnalysis {
 
         //--- Class Methods ---
-        public static IEnumerable<ISymbol> GetMissingEnumMembers(SyntaxNode switchNode, SemanticModel semanticModel, out TypeInfo switchVariableTypeInfo) {
-            var switchVariable = switchNode.DescendantNodes().OfType<IdentifierNameSyntax>().First();
-            switchVariableTypeInfo = semanticModel.GetTypeInfo(switchVariable);
+        public static IEnumerable<ISymbol> GetMissingEnumMembers(SyntaxNode switchNode, SemanticModel semanticModel, out IdentifierNameSyntax switchVariable) {
+            switchVariable = switchNode.DescendantNodes().OfType<IdentifierNameSyntax>().First();
+            var switchVariableTypeInfo = semanticModel.GetTypeInfo(switchVariable);
 
             // check if we are switching over an enum
             if(switchVariableTypeInfo.Type.TypeKind == TypeKind.Enum) {

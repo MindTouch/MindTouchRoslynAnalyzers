@@ -19,6 +19,7 @@ using System.Collections.Immutable;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace EnumSwitchAnalyzer {
@@ -40,9 +41,10 @@ namespace EnumSwitchAnalyzer {
         //--- Class Methods ---
         private static void AnalyzeSwitchStatement(SyntaxNodeAnalysisContext context) {
             var semanticModel = context.SemanticModel;
-            TypeInfo switchVariableTypeInfo;
-            var missingMembers = EnumSwitchAnalysis.GetMissingEnumMembers(context.Node, semanticModel, out switchVariableTypeInfo);
+            IdentifierNameSyntax switchVariable;
+            var missingMembers = EnumSwitchAnalysis.GetMissingEnumMembers(context.Node, semanticModel, out switchVariable);
             if(missingMembers.Any()) {
+                var switchVariableTypeInfo = semanticModel.GetTypeInfo(switchVariable);
                 var diagnostic = Diagnostic.Create(Rule, context.Node.GetLocation(), switchVariableTypeInfo.Type.Name, string.Join(", ", missingMembers.Select(x => x.Name).ToImmutableArray()));
                 context.ReportDiagnostic(diagnostic);
             }

@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 
+using System;
 using System.Collections.Immutable;
 using System.Composition;
 using System.Linq;
@@ -37,11 +38,20 @@ namespace EnumSwitchAnalyzer {
         private static async Task<Document> AddMissingEnumFields(Document document, SyntaxToken typeDecl, CancellationToken cancellationToken) {
             var semanticModel = await document.GetSemanticModelAsync(cancellationToken);
             var node = typeDecl.Parent;
-            TypeInfo switchVariableTypeInfo;
-            var missingMembers = EnumSwitchAnalysis.GetMissingEnumMembers(node, semanticModel, out switchVariableTypeInfo);
+            IdentifierNameSyntax switchVariable;
+            var missingMembers = EnumSwitchAnalysis.GetMissingEnumMembers(node, semanticModel, out switchVariable);
             if(missingMembers.Any()) {
 
+                // get existing switchSections
+                var existingSections = node.DescendantNodes().OfType<SwitchSectionSyntax>().ToImmutableArray();
+                SwitchSectionSyntax defaultSection = null;
+                if(existingSections.Any() && existingSections.Last().DescendantNodes().OfType<DefaultSwitchLabelSyntax>().Any()) {
+                    defaultSection = existingSections.Last();
+                    existingSections = existingSections.Take(existingSections.Length - 1).ToImmutableArray();
+                }
+
                 // generate missing case statements
+                var switchVariableTypeInfo = semanticModel.GetTypeInfo(switchVariable);
                 var newCaseStatements = missingMembers.Select(missingMember =>
                     SyntaxFactory.CaseSwitchLabel(
                         SyntaxFactory.Token(SyntaxKind.CaseKeyword),
@@ -51,16 +61,34 @@ namespace EnumSwitchAnalyzer {
                             SyntaxFactory.IdentifierName(missingMember.Name)
                         ),
                         SyntaxFactory.Token(SyntaxKind.ColonToken))
-                ).ToImmutableArray();
+                ).Select(caseSection => SyntaxFactory.SwitchSection(
+                    SyntaxFactory.List<SwitchLabelSyntax>(new[] { caseSection }),
+                    SyntaxFactory.List<StatementSyntax>().Add(
+                        SyntaxFactory.ThrowStatement(
+                            SyntaxFactory.ObjectCreationExpression(
+                                SyntaxFactory.ParseTypeName(nameof(NotImplementedException)),
+                                SyntaxFactory.ArgumentList(),
+                                null
+                            )
+                        )
+                    )
+                )).ToImmutableArray();
 
                 // insert case statements after the last one
-                var lastCaseStatement = node.DescendantNodes().OfType<CaseSwitchLabelSyntax>().LastOrDefault();
-
-                // TODO(2015-02-11, yurig): this is curently broken, if the switch statement is empty, the extension crashes
-                var insertAfter = lastCaseStatement ?? node;
                 var tree = await document.GetSyntaxTreeAsync(cancellationToken);
                 var root = (CompilationUnitSyntax)tree.GetRoot(cancellationToken);
-                root = root.InsertNodesAfter(insertAfter, newCaseStatements);
+                var switchStatement = SyntaxFactory.SwitchStatement(
+                        SyntaxFactory.IdentifierName(switchVariable.Identifier)
+                            .WithLeadingTrivia(switchVariable.GetLeadingTrivia())
+                            .WithTrailingTrivia(switchVariable.GetTrailingTrivia())
+                    )
+                        .WithSections(new SyntaxList<SwitchSectionSyntax>()
+                            .AddRange(existingSections)
+                            .AddRange(newCaseStatements)
+                            .AddRange(defaultSection == null ? Enumerable.Empty<SwitchSectionSyntax>() : new [] { defaultSection }))
+                        .WithLeadingTrivia(node.GetLeadingTrivia())
+                        .WithTrailingTrivia(node.GetTrailingTrivia());
+                root = root.ReplaceNode(node, switchStatement);
                 return document.WithSyntaxRoot(root);
             }
             return document;

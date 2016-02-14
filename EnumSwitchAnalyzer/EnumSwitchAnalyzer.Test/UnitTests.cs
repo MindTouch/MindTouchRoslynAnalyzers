@@ -22,6 +22,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TestHelper;
 
 namespace EnumSwitchAnalyzer.Test {
+
     [TestClass]
     public class UnitTest : CodeFixVerifier {
         
@@ -29,7 +30,6 @@ namespace EnumSwitchAnalyzer.Test {
         public void No_diagnostics_when_all_cases_covered() {
             var test = @"
     using System;
-
     namespace Application {
         
         Enum MyEnum { A, B, C, D, E, F };
@@ -44,7 +44,7 @@ namespace EnumSwitchAnalyzer.Test {
                     case MyEnum.D:
                     case MyEnum.E:
                     case MyEnum.F:
-                        int x = 0;
+                        break;
                 }
             }
         }    
@@ -55,23 +55,22 @@ namespace EnumSwitchAnalyzer.Test {
         [TestMethod]
         public void Diagnostics_and_code_fix_when_enum_value_missing() {
             var test = @"
-    namespace Application
-{
+    using System;
+    namespace Application {
+
     enum MyEnum { A, B, C, D, E, F }
 
-    class MyClass
-    {
-        public static void Function()
-        {
-            MyEnum e;
-            switch (e)
+    class MyClass {
+        public static void Function() {
+            MyEnum e = 0;
+            switch (e) 
             {
                 case MyEnum.A:
                 case MyEnum.B:
                 case MyEnum.C:
                 case MyEnum.D:
                 case MyEnum.E:
-                    int x = 0;
+                    break;
             }
         }
     }
@@ -82,22 +81,19 @@ namespace EnumSwitchAnalyzer.Test {
                 Severity = DiagnosticSeverity.Error,
                 Locations =
                     new[] {
-                            new DiagnosticResultLocation("Test0.cs", 11, 13)
+                            new DiagnosticResultLocation("Test0.cs", 10, 13)
                         }
             };
-
             VerifyCSharpDiagnostic(test, expected);
-
             var fixtest = @"
-    namespace Application
-{
+    using System;
+    namespace Application {
+
     enum MyEnum { A, B, C, D, E, F }
 
-    class MyClass
-    {
-        public static void Function()
-        {
-            MyEnum e;
+    class MyClass {
+        public static void Function() {
+            MyEnum e = 0;
             switch (e)
             {
                 case MyEnum.A:
@@ -105,8 +101,129 @@ namespace EnumSwitchAnalyzer.Test {
                 case MyEnum.C:
                 case MyEnum.D:
                 case MyEnum.E:
+                    break;
                 case MyEnum.F:
-                    int x = 0;
+                    throw new NotImplementedException();
+            }
+        }
+    }
+}";
+            VerifyCSharpFix(test, fixtest);
+        }
+
+        [TestMethod]
+        public void Diagnostics_and_code_fix_when_enum_value_missing_with_default() {
+            var test = @"
+    using System;
+    namespace Application {
+
+    enum MyEnum { A, B, C, D, E, F }
+
+    class MyClass {
+        public static void Function() {
+            MyEnum e = 0;
+            switch (e) 
+            {
+                case MyEnum.A:
+                case MyEnum.B:
+                case MyEnum.C:
+                case MyEnum.D:
+                case MyEnum.E:
+                    break;
+                default:
+                    throw new Exception();
+            }
+        }
+    }
+}";
+            var expected = new DiagnosticResult {
+                Id = "EnumSwitchAnalyzer",
+                Message = string.Format("switch on enum 'MyEnum' is missing the following members: 'F'"),
+                Severity = DiagnosticSeverity.Error,
+                Locations =
+                    new[] {
+                            new DiagnosticResultLocation("Test0.cs", 10, 13)
+                        }
+            };
+            VerifyCSharpDiagnostic(test, expected);
+            var fixtest = @"
+    using System;
+    namespace Application {
+
+    enum MyEnum { A, B, C, D, E, F }
+
+    class MyClass {
+        public static void Function() {
+            MyEnum e = 0;
+            switch (e)
+            {
+                case MyEnum.A:
+                case MyEnum.B:
+                case MyEnum.C:
+                case MyEnum.D:
+                case MyEnum.E:
+                    break;
+                case MyEnum.F:
+                    throw new NotImplementedException();
+                default:
+                    throw new Exception();
+            }
+        }
+    }
+}";
+            VerifyCSharpFix(test, fixtest);
+        }
+
+        [TestMethod]
+        public void Diagnostics_and_code_fix_when_switch_is_empty() {
+            var test = @"
+    using System;
+    namespace Application {
+
+    enum MyEnum { A, B, C, D, E, F }
+
+    class MyClass {
+        public static void Function() {
+            MyEnum e = 0;
+            switch (e)
+            {
+            }
+        }
+    }
+}";
+            var expected = new DiagnosticResult {
+                Id = "EnumSwitchAnalyzer",
+                Message = string.Format("switch on enum 'MyEnum' is missing the following members: 'A, B, C, D, E, F'"),
+                Severity = DiagnosticSeverity.Error,
+                Locations =
+                    new[] {
+                            new DiagnosticResultLocation("Test0.cs", 10, 13)
+                        }
+            };
+            VerifyCSharpDiagnostic(test, expected);
+            var fixtest = @"
+    using System;
+    namespace Application {
+
+    enum MyEnum { A, B, C, D, E, F }
+
+    class MyClass {
+        public static void Function() {
+            MyEnum e = 0;
+            switch (e)
+            {
+                case MyEnum.A:
+                    throw new NotImplementedException();
+                case MyEnum.B:
+                    throw new NotImplementedException();
+                case MyEnum.C:
+                    throw new NotImplementedException();
+                case MyEnum.D:
+                    throw new NotImplementedException();
+                case MyEnum.E:
+                    throw new NotImplementedException();
+                case MyEnum.F:
+                    throw new NotImplementedException();
             }
         }
     }
