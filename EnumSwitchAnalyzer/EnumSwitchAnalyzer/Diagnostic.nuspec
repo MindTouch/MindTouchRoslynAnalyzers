@@ -6,8 +6,8 @@
     <title>EnumSwitchAnalyzer</title>
     <authors>Admin</authors>
     <owners>Admin</owners>
-    <licenseUrl>http://LICENSE_URL_HERE_OR_DELETE_THIS_LINE</licenseUrl>
-    <projectUrl>http://PROJECT_URL_HERE_OR_DELETE_THIS_LINE</projectUrl>
+    <licenseUrl>https://github.com/MindTouch/RoslynAnalyzers/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/MindTouch/RoslynAnalyzers/</projectUrl>
     <iconUrl>http://ICON_URL_HERE_OR_DELETE_THIS_LINE</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>EnumSwitchAnalyzer</description>
