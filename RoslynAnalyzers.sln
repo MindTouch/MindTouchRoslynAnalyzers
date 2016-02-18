@@ -9,6 +9,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EnumSwitchAnalyzer.Test", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EnumSwitchAnalyzer.Vsix", "EnumSwitchAnalyzer\EnumSwitchAnalyzer.Vsix\EnumSwitchAnalyzer.Vsix.csproj", "{11BB92A0-7C56-44E6-BE63-55AE8F0185D5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MaterializeCollectionsAnalyzer", "MaterializeCollectionsAnalyzer\MaterializeCollectionsAnalyzer\MaterializeCollectionsAnalyzer.csproj", "{CEFDD049-E7DE-4503-AC24-2615EB6B1148}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MaterializeCollectionsAnalyzer.Test", "MaterializeCollectionsAnalyzer\MaterializeCollectionsAnalyzer.Test\MaterializeCollectionsAnalyzer.Test.csproj", "{8B713886-9740-453A-B438-7EC8F68889DA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MaterializeCollectionsAnalyzer.Vsix", "MaterializeCollectionsAnalyzer\MaterializeCollectionsAnalyzer.Vsix\MaterializeCollectionsAnalyzer.Vsix.csproj", "{EBEDB89C-1FA9-449F-866E-16B9B2A69726}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +33,18 @@ Global
 		{11BB92A0-7C56-44E6-BE63-55AE8F0185D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{11BB92A0-7C56-44E6-BE63-55AE8F0185D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{11BB92A0-7C56-44E6-BE63-55AE8F0185D5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CEFDD049-E7DE-4503-AC24-2615EB6B1148}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CEFDD049-E7DE-4503-AC24-2615EB6B1148}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CEFDD049-E7DE-4503-AC24-2615EB6B1148}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CEFDD049-E7DE-4503-AC24-2615EB6B1148}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8B713886-9740-453A-B438-7EC8F68889DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8B713886-9740-453A-B438-7EC8F68889DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8B713886-9740-453A-B438-7EC8F68889DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8B713886-9740-453A-B438-7EC8F68889DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EBEDB89C-1FA9-449F-866E-16B9B2A69726}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EBEDB89C-1FA9-449F-866E-16B9B2A69726}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EBEDB89C-1FA9-449F-866E-16B9B2A69726}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EBEDB89C-1FA9-449F-866E-16B9B2A69726}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
