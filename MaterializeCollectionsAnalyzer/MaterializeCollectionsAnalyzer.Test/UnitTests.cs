@@ -166,6 +166,100 @@ namespace MaterializeCollectionsAnalyzer.Test {
             VerifyCSharpFix(test, fixtest);
         }
 
+        [TestMethod]
+        public void Unmaterialized_collections_in_return_statements_are_flagged() {
+            var test = @"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1 {
+        class TypeName {
+            public IEnumerable<int> Add(IEnumerable<int> a, IEnumerable<int> b) {
+                var l1 = new List<int>().Select(x => x+1);
+                return l1;
+            }
+        }
+    }";
+            var expected = new DiagnosticResult {
+                Id = "MaterializeCollectionsAnalyzer",
+                Message = "Collection should be materialized to a specific type",
+                Severity = DiagnosticSeverity.Warning,
+                Locations =
+                    new[] {
+                            new DiagnosticResultLocation("Test0.cs", 13, 24)
+                        }
+            };
+            VerifyCSharpDiagnostic(test, expected);
+            var fixtest = @"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1 {
+        class TypeName {
+            public IEnumerable<int> Add(IEnumerable<int> a, IEnumerable<int> b) {
+                var l1 = new List<int>().Select(x => x+1);
+                return l1.ToArray();
+            }
+        }
+    }";
+            VerifyCSharpFix(test, fixtest);
+        }
+
+        [TestMethod]
+        public void Unmaterialized_collections_in_return_statements_are_flagged() {
+            var test = @"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1 {
+        class TypeName {
+            public IEnumerable<int> Add(IEnumerable<int> a, IEnumerable<int> b) {
+                var l1 = new List<int>().Select(x => x+1);
+                return l1;
+            }
+        }
+    }";
+            var expected = new DiagnosticResult {
+                Id = "MaterializeCollectionsAnalyzer",
+                Message = "Collection should be materialized to a specific type",
+                Severity = DiagnosticSeverity.Warning,
+                Locations =
+                    new[] {
+                            new DiagnosticResultLocation("Test0.cs", 13, 24)
+                        }
+            };
+            VerifyCSharpDiagnostic(test, expected);
+            var fixtest = @"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1 {
+        class TypeName {
+            public IEnumerable<int> Add(IEnumerable<int> a, IEnumerable<int> b) {
+                var l1 = new List<int>().Select(x => x+1);
+                return l1.ToArray();
+            }
+        }
+    }";
+            VerifyCSharpFix(test, fixtest);
+        }
+
         protected override CodeFixProvider GetCSharpCodeFixProvider() {
             return new MaterializeCollectionsAnalyzerCodeFixProvider();
         }

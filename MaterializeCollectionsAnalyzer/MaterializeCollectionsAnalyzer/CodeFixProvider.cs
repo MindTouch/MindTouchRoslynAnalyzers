@@ -34,6 +34,48 @@ namespace MaterializeCollectionsAnalyzer {
         //--- Constants ---
         private const string title = "Materialize using ToArray()";
 
+        //--- Class Methods ---
+        private static async Task<Document> MakeArray(Document document, SyntaxToken typeDecl, CancellationToken cancellationToken) {
+            var semanticModel = await document.GetSemanticModelAsync(cancellationToken);
+
+            // check to see if this is an argument to a method call
+            SyntaxNode node = null;
+            if(typeDecl.Parent.Ancestors().Any(x => x.Kind() == SyntaxKind.Argument)) {
+                node = typeDecl.Parent.Ancestors()
+                 .Where(x => x.Kind() == SyntaxKind.Argument)
+                 .Select(x => x.DescendantNodes().First())
+                 .First();
+
+                // check to see if we are dealing with a return statement
+            } else if(typeDecl.Parent.Ancestors().Any(x => x.Kind() == SyntaxKind.ReturnStatement)) {
+                node = typeDecl.Parent.Ancestors().Where(x => x.Kind() == SyntaxKind.ReturnStatement).Select(x => x.DescendantNodes().First()).First();
+            }
+            if(node == null) {
+
+                // we did not recognize this node, do nothing
+                return document;
+            }
+
+            var typeInfo = semanticModel.GetTypeInfo(node);
+            var tree = await document.GetSyntaxTreeAsync(cancellationToken);
+            var root = (CompilationUnitSyntax)tree.GetRoot(cancellationToken);
+            if(MaterializedCollectionsUtils.IsCollection(typeInfo.ConvertedType) && typeInfo.Type.IsAbstract) {
+
+                // generate a .ToArray() call around the argument
+                var newNode = SyntaxFactory.InvocationExpression(
+                    SyntaxFactory.MemberAccessExpression(
+                        SyntaxKind.SimpleMemberAccessExpression,
+                        (ExpressionSyntax)node,
+                        SyntaxFactory.IdentifierName(@"ToArray")
+                    ),
+                    SyntaxFactory.ArgumentList()
+                );
+                var newRoot = root.ReplaceNode(node, newNode);
+                return document.WithSyntaxRoot(newRoot);
+            }
+            return document;
+        }
+
         //--- Methods ---
         public sealed override ImmutableArray<string> FixableDiagnosticIds {
             get { return ImmutableArray.Create(MaterializeCollectionsAnalyzerAnalyzer.DiagnosticId); }
@@ -58,32 +100,6 @@ namespace MaterializeCollectionsAnalyzer {
                     createChangedDocument: c => MakeArray(context.Document, argument, c),
                     equivalenceKey: title),
                 diagnostic);
-        }
-
-        private async Task<Document> MakeArray(Document document, SyntaxToken typeDecl, CancellationToken cancellationToken) {
-            var semanticModel = await document.GetSemanticModelAsync(cancellationToken);
-            var node = typeDecl.Parent.Ancestors()
-                .Where(x => x.Kind() == SyntaxKind.Argument)
-                .Select(x => x.DescendantNodes().First())
-                .First();
-            var typeInfo = semanticModel.GetTypeInfo(node);
-            var tree = await document.GetSyntaxTreeAsync(cancellationToken);
-            var root = (CompilationUnitSyntax)tree.GetRoot(cancellationToken);
-            if(MaterializedCollectionsUtils.IsCollection(typeInfo.ConvertedType) && typeInfo.Type.IsAbstract) {
-
-                // generate a .ToArray() call around the argument
-                var newNode = SyntaxFactory.InvocationExpression(
-                    SyntaxFactory.MemberAccessExpression(
-                        SyntaxKind.SimpleMemberAccessExpression,
-                        (ExpressionSyntax)node,
-                        SyntaxFactory.IdentifierName(@"ToArray")
-                    ),
-                    SyntaxFactory.ArgumentList()
-                );
-                var newRoot = root.ReplaceNode(node, newNode);
-                return document.WithSyntaxRoot(newRoot);
-            }
-            return document;
         }
     }
 }

@@ -15,7 +15,9 @@
  * limitations under the License.
  */
 
+using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -60,12 +62,25 @@ namespace MaterializeCollectionsAnalyzer {
             }
         }
 
+        private static void AnalyzeReturnStatement(SyntaxNodeAnalysisContext context) {
+            var semanticModel = context.SemanticModel;
+            var node = context.Node.DescendantNodes().First();
+            var typeInfo = semanticModel.GetTypeInfo(node);
+
+            // check if the argument type is IEnumerable, and if it is abstract
+            if(MaterializedCollectionsUtils.IsCollection(typeInfo.ConvertedType) && typeInfo.Type.IsAbstract) {
+                var diagnostic = Diagnostic.Create(Rule, node.GetLocation(), "");
+                context.ReportDiagnostic(diagnostic);
+            }
+        }
+
         //--- Fields ---
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get { return ImmutableArray.Create(Rule); } }
 
         //--- Methods ---
         public override void Initialize(AnalysisContext context) {
             context.RegisterSyntaxNodeAction(AnalyzeInvocation, SyntaxKind.InvocationExpression);
+            context.RegisterSyntaxNodeAction(AnalyzeReturnStatement, SyntaxKind.ReturnStatement);
         }
     }
 }
