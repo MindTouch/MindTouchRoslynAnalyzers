@@ -75,7 +75,7 @@ namespace MaterializeCollectionsAnalyzer {
                 var newNode = SyntaxFactory.InvocationExpression(
                     SyntaxFactory.MemberAccessExpression(
                         SyntaxKind.SimpleMemberAccessExpression,
-                        (InvocationExpressionSyntax)node,
+                        (ExpressionSyntax)node,
                         SyntaxFactory.IdentifierName(@"ToArray")
                     ),
                     SyntaxFactory.ArgumentList()

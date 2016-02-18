@@ -22,6 +22,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TestHelper;
 
 namespace MaterializeCollectionsAnalyzer.Test {
+
     [TestClass]
     public class UnitTest : CodeFixVerifier {
         
@@ -102,6 +103,63 @@ namespace MaterializeCollectionsAnalyzer.Test {
                 var l1 = new List<int>();
                 var l2 = new List<int>();
                 Add(l1, l2.Select(x => x+x).ToArray());
+            }
+        }
+    }";
+            VerifyCSharpFix(test, fixtest);
+        }
+
+        [TestMethod]
+        public void Select_statement_is_detected_unmaterialized_collection_when_not_directly_in_argument() {
+            var test = @"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1 {
+        class TypeName {
+            public void Add(IEnumerable<int> a, IEnumerable<int> b) {
+                return;
+            }
+
+            public void Test() {
+                var l1 = new List<int>();
+                var l2 = new List<int>().Select(x => x+x);
+                Add(l1, l2);
+            }
+        }
+    }";
+            var expected = new DiagnosticResult {
+                Id = "MaterializeCollectionsAnalyzer",
+                Message = "Collection should be materialized to a specific type",
+                Severity = DiagnosticSeverity.Warning,
+                Locations =
+                    new[] {
+                            new DiagnosticResultLocation("Test0.cs", 18, 25)
+                        }
+            };
+            VerifyCSharpDiagnostic(test, expected);
+            var fixtest = @"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1 {
+        class TypeName {
+            public void Add(IEnumerable<int> a, IEnumerable<int> b) {
+                return;
+            }
+
+            public void Test() {
+                var l1 = new List<int>();
+                var l2 = new List<int>().Select(x => x+x);
+                Add(l1, l2.ToArray());
             }
         }
     }";
