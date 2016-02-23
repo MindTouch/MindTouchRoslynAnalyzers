@@ -1,0 +1,27 @@
+version: 1.0.{build}
+branches:
+  only:
+  - master
+os: Visual Studio 2015
+configuration: Release
+platform: Any CPU
+before_build:
+- cmd: >-
+    appveyor DownloadFile https://raw.githubusercontent.com/appveyor/ci/master/scripts/nuget-restore.cmd
+
+    nuget-restore
+build:
+  verbosity: minimal
+artifacts:
+- path: '**/MindTouch*.nupkg'
+deploy:
+- provider: Environment
+  name: MindTouch NuGet
+notifications:
+- provider: Email
+  to:
+  - main@mindtouch.flowdock.com
+  subject: RoslynAnalyzers build
+  on_build_success: true
+  on_build_failure: true
+  on_build_status_changed: true
