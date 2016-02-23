@@ -1,5 +1,5 @@
-﻿EnumSwitchAnalysis
-==================
+﻿MindTouchEnumSwitchAnalysis
+===========================
 
 This analyzer detects when not all Enum values are accounted for inside a switch statement. For example:
 

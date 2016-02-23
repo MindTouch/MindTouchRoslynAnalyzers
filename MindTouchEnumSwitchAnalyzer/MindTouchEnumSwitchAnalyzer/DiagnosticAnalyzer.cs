@@ -22,7 +22,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 
-namespace EnumSwitchAnalyzer {
+namespace MindTouchEnumSwitchAnalyzer {
 
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public class EnumSwitchAnalyzerAnalyzer : DiagnosticAnalyzer {

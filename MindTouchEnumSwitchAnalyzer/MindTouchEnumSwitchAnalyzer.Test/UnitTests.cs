@@ -21,7 +21,7 @@ using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TestHelper;
 
-namespace EnumSwitchAnalyzer.Test {
+namespace MindTouchEnumSwitchAnalyzer.Test {
 
     [TestClass]
     public class UnitTest : CodeFixVerifier {

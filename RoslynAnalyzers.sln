@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EnumSwitchAnalyzer", "EnumSwitchAnalyzer\EnumSwitchAnalyzer\EnumSwitchAnalyzer.csproj", "{1FC79BE5-ABF5-475C-A62C-2BD7BE9B6EE8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MindTouchEnumSwitchAnalyzer", "MindTouchEnumSwitchAnalyzer\MindTouchEnumSwitchAnalyzer\MindTouchEnumSwitchAnalyzer.csproj", "{1FC79BE5-ABF5-475C-A62C-2BD7BE9B6EE8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EnumSwitchAnalyzer.Test", "EnumSwitchAnalyzer\EnumSwitchAnalyzer.Test\EnumSwitchAnalyzer.Test.csproj", "{06667B39-19D0-408A-AB4B-83631D4BC807}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MindTouchEnumSwitchAnalyzer.Test", "MindTouchEnumSwitchAnalyzer\MindTouchEnumSwitchAnalyzer.Test\MindTouchEnumSwitchAnalyzer.Test.csproj", "{06667B39-19D0-408A-AB4B-83631D4BC807}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EnumSwitchAnalyzer.Vsix", "EnumSwitchAnalyzer\EnumSwitchAnalyzer.Vsix\EnumSwitchAnalyzer.Vsix.csproj", "{11BB92A0-7C56-44E6-BE63-55AE8F0185D5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MindTouchEnumSwitchAnalyzer.Vsix", "MindTouchEnumSwitchAnalyzer\MindTouchEnumSwitchAnalyzer.Vsix\MindTouchEnumSwitchAnalyzer.Vsix.csproj", "{11BB92A0-7C56-44E6-BE63-55AE8F0185D5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MaterializeCollectionsAnalyzer", "MaterializeCollectionsAnalyzer\MaterializeCollectionsAnalyzer\MaterializeCollectionsAnalyzer.csproj", "{CEFDD049-E7DE-4503-AC24-2615EB6B1148}"
 EndProject

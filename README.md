@@ -3,10 +3,10 @@ RoslynAnalyzers
 
 C# code analyzers built on the Roslyn compiler.
 
-EnumSwitchAnalyzer
-------------------
+MindTouchEnumSwitchAnalyzer
+---------------------------
 
-Roslyn analyzer that ensures that all enum cases are handled when used inside a switch statement. [Read more.](EnumSwitchAnalyzer/EnumSwitchAnalyzer/README.md)
+Roslyn analyzer that ensures that all enum cases are handled when used inside a switch statement. [Read more.](MindTouchEnumSwitchAnalyzer/MindTouchEnumSwitchAnalyzer/README.md)
 
 MaterializeCollectionsAnalyzer
 ------------------------------
