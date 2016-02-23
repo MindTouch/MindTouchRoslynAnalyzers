@@ -8,10 +8,10 @@ MindTouchEnumSwitchAnalyzer
 
 Roslyn analyzer that ensures that all enum cases are handled when used inside a switch statement. [Read more.](MindTouchEnumSwitchAnalyzer/MindTouchEnumSwitchAnalyzer/README.md)
 
-MaterializeCollectionsAnalyzer
-------------------------------
+MindTouchMaterializeCollectionsAnalyzer
+---------------------------------------
 
-Analyzer that ensures that any collections passed in as parameters to a function, or returned from a function are materialized. [Read more.](MaterializeCollectionsAnalyzer/MaterializeCollectionsAnalyzer/README.md)
+Analyzer that ensures that any collections passed in as parameters to a function, or returned from a function are materialized. [Read more.](MindTouchMaterializeCollectionsAnalyzer/MindTouchMaterializeCollectionsAnalyzer/README.md)
 
 System Requirements
 -------------------

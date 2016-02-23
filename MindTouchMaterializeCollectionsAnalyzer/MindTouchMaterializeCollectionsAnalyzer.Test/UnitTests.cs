@@ -21,7 +21,7 @@ using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TestHelper;
 
-namespace MaterializeCollectionsAnalyzer.Test {
+namespace MindTouchMaterializeCollectionsAnalyzer.Test {
 
     [TestClass]
     public class UnitTest : CodeFixVerifier {

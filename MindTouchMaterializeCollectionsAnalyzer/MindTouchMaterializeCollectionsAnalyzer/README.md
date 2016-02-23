@@ -1,5 +1,5 @@
-﻿MaterializeCollectionsAnalyzer
-===============================
+﻿MindTouchMaterializeCollectionsAnalyzer
+=======================================
 
 We follow the convention that whenever an IEnumerable type is passed into a function or returned from a function, it must be materialized to a concrete type. For example:
 

@@ -15,19 +15,13 @@
  * limitations under the License.
  */
 
-using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Linq.Expressions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Microsoft.CodeAnalysis.FindSymbols;
 
-namespace MaterializeCollectionsAnalyzer {
+namespace MindTouchMaterializeCollectionsAnalyzer {
 
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public class MaterializeCollectionsAnalyzerAnalyzer : DiagnosticAnalyzer {
