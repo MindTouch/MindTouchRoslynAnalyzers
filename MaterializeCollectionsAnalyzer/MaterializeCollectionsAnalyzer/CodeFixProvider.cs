@@ -43,12 +43,12 @@ namespace MaterializeCollectionsAnalyzer {
             if(typeDecl.Parent.Ancestors().Any(x => x.Kind() == SyntaxKind.Argument)) {
                 node = typeDecl.Parent.Ancestors()
                  .Where(x => x.Kind() == SyntaxKind.Argument)
-                 .Select(x => x.DescendantNodes().First())
-                 .First();
+                 .Select(x => x.DescendantNodes().FirstOrDefault())
+                 .FirstOrDefault();
 
                 // check to see if we are dealing with a return statement
             } else if(typeDecl.Parent.Ancestors().Any(x => x.Kind() == SyntaxKind.ReturnStatement)) {
-                node = typeDecl.Parent.Ancestors().Where(x => x.Kind() == SyntaxKind.ReturnStatement).Select(x => x.DescendantNodes().First()).First();
+                node = typeDecl.Parent.Ancestors().Where(x => x.Kind() == SyntaxKind.ReturnStatement).Select(x => x.DescendantNodes().FirstOrDefault()).FirstOrDefault();
             }
             if(node == null) {
 

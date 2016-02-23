@@ -15,13 +15,17 @@
  * limitations under the License.
  */
 
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Linq.Expressions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
+using Microsoft.CodeAnalysis.FindSymbols;
 
 namespace MaterializeCollectionsAnalyzer {
 
@@ -47,16 +51,18 @@ namespace MaterializeCollectionsAnalyzer {
             var argNodes =
                 node.DescendantNodes()
                 .Where(x => x.Kind() == SyntaxKind.Argument)
-                .Select(x => x.DescendantNodes().First())
+                .Select(x => x.DescendantNodes().FirstOrDefault())
+                .Where(x => x != null)
                 .ToImmutableArray();
             if(argNodes.Any()) {
                 foreach(var argument in argNodes) {
                     var typeInfo = semanticModel.GetTypeInfo(argument);
 
                     // check if the argument type is IEnumerable, and if it is abstract
-                    if(MaterializedCollectionsUtils.IsCollection(typeInfo.ConvertedType) && typeInfo.Type.IsAbstract) {
-                        var diagnostic = Diagnostic.Create(Rule, argument.GetLocation(), "");
-                        context.ReportDiagnostic(diagnostic);
+                    if(IsCollectionType(typeInfo)) {
+                        if(ShouldReportOnCollectionNode(semanticModel, argument)) {
+                            ReportDiagnostic(context, argument.GetLocation());
+                        }
                     }
                 }
             }
@@ -64,14 +70,71 @@ namespace MaterializeCollectionsAnalyzer {
 
         private static void AnalyzeReturnStatement(SyntaxNodeAnalysisContext context) {
             var semanticModel = context.SemanticModel;
-            var node = context.Node.DescendantNodes().First();
-            var typeInfo = semanticModel.GetTypeInfo(node);
-
-            // check if the argument type is IEnumerable, and if it is abstract
-            if(MaterializedCollectionsUtils.IsCollection(typeInfo.ConvertedType) && typeInfo.Type.IsAbstract) {
-                var diagnostic = Diagnostic.Create(Rule, node.GetLocation(), "");
-                context.ReportDiagnostic(diagnostic);
+            var node = context.Node.DescendantNodes().FirstOrDefault();
+            if(node == null) {
+                return;
             }
+            var typeInfo = semanticModel.GetTypeInfo(node);
+            if(IsCollectionType(typeInfo)) {
+                if(ShouldReportOnCollectionNode(semanticModel, node)) {
+                    ReportDiagnostic(context, node.GetLocation());
+                }
+            }
+        }
+
+        private static bool ShouldReportOnCollectionNode(SemanticModel semanticModel, SyntaxNode argument) {
+
+            // if the variable is an invocation syntax we can assume that it was returned materialized
+            switch(argument.Kind()) {
+            case SyntaxKind.InvocationExpression:
+                var methodCallInfo = semanticModel.GetSymbolInfo(argument);
+                if(methodCallInfo.Symbol != null && methodCallInfo.Symbol.Kind == SymbolKind.Method) {
+                    var mSymbol = (IMethodSymbol)methodCallInfo.Symbol;
+
+                    // If the method is not an extension method, we assume it returned a materialized collection
+                    if(!mSymbol.IsExtensionMethod) {
+                        return false;
+                    }
+                }
+                break;
+            case SyntaxKind.IdentifierName:
+                var identifierInfo = semanticModel.GetSymbolInfo(argument);
+
+                // if this identifier came straight from a parameter, assume it is materialized
+                if(identifierInfo.Symbol != null && identifierInfo.Symbol.Kind == SymbolKind.Parameter) {
+                    return false;
+                }
+
+                // if this is a local identifier, look at where it is defined
+                if(identifierInfo.Symbol != null && identifierInfo.Symbol.Kind == SymbolKind.Local) {
+                    var declaration = identifierInfo.Symbol.DeclaringSyntaxReferences.FirstOrDefault();
+                    var equalsExpression = declaration?.GetSyntax()
+                        .ChildNodes()
+                        .FirstOrDefault(x => x.Kind() == SyntaxKind.EqualsValueClause);
+                    var firstChild = equalsExpression?.ChildNodes().FirstOrDefault();
+                    if(firstChild != null) {
+                        return ShouldReportOnCollectionNode(semanticModel, firstChild);
+                    }
+                }
+                break;
+            case SyntaxKind.SimpleMemberAccessExpression:
+                
+                // Assume that member accesses are returned materialized
+                return false;
+            }
+            return true;
+        }
+
+        private static void ReportDiagnostic(SyntaxNodeAnalysisContext context, Location location) {
+            var diagnostic = Diagnostic.Create(Rule, location, "");
+            context.ReportDiagnostic(diagnostic);
+        }
+        
+        private static bool IsCollectionType(TypeInfo typeInfo) {
+            if(typeInfo.Type == null || typeInfo.ConvertedType == null) {
+                return false;
+            }
+            return MaterializedCollectionsUtils.IsCollection(typeInfo.ConvertedType) && typeInfo.Type.IsAbstract;
         }
 
         //--- Fields ---

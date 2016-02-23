@@ -214,7 +214,179 @@ namespace MaterializeCollectionsAnalyzer.Test {
         }
 
         [TestMethod]
-        public void Unmaterialized_collections_in_return_statements_are_flagged() {
+        public void Values_coming_straight_from_method_call_directly_are_assumed_materialized() {
+            var test = @"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1 {
+        class TypeName {
+            public static IEnumerable<int> GetCollection() {
+                return new List<int>();
+            }
+            public IEnumerable<int> Add(IEnumerable<int> a, IEnumerable<int> b) {
+                var l1 = new List<int>().Select(x => x+1).ToArray();
+                return l1;
+            }
+            public static void Main() {
+                var x = Add(GetCollection(), GetCollection());
+            }
+        }
+    }";
+            VerifyCSharpDiagnostic(test);
+        }
+
+        [TestMethod]
+        public void Values_coming_straight_from_method_call_directly_are_assumed_materialized_in_return_statement() {
+            var test = @"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1 {
+        class TypeName {
+            public static IEnumerable<int> GetCollection() {
+                return new List<int>();
+            }
+            public IEnumerable<int> Add(IEnumerable<int> a, IEnumerable<int> b) {
+                var l1 = new List<int>().Select(x => x+1).ToArray();
+                return l1;
+            }
+            public static IEnumerable<int> Main() {
+                return TypeName.Add(GetCollection(), GetCollection());
+            }
+        }
+    }";
+            VerifyCSharpDiagnostic(test);
+        }
+
+        [TestMethod]
+        public void Values_coming_straight_from_method_call_indirectly_are_assumed_materialized() {
+            var test = @"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1 {
+        class TypeName {
+            public static IEnumerable<int> GetCollection() {
+                return new List<int>();
+            }
+            public IEnumerable<int> Add(IEnumerable<int> a, IEnumerable<int> b) {
+                var l1 = new List<int>().Select(x => x+1).ToArray();
+                return l1;
+            }
+            public static void Main() {
+                var a = GetCollection();
+                var b = GetCollection();
+                var x = Add(a, b);
+            }
+        }
+    }";
+            VerifyCSharpDiagnostic(test);
+        }
+
+        [TestMethod]
+        public void Values_of_ienumerable_type_with_subsequent_materialization() {
+            var test = @"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1 {
+        class TypeName {
+            public static IEnumerable<int> GetCollection() {
+                return new List<int>();
+            }
+            public IEnumerable<int> Add(IEnumerable<int> a, IEnumerable<int> b) {
+                var l1 = new List<int>().Select(x => x+1).ToArray();
+                return l1;
+            }
+            public static void Main() {
+                IEnumerable<int> a;
+                IEnumerable<int> b;
+                a = GetCollection();
+                b = GetCollection();
+                var x = Add(a, b);
+            }
+        }
+    }";
+            VerifyCSharpDiagnostic(test);
+        }
+
+        [TestMethod]
+        public void Values_coming_straight_from_property_call_directly_are_assumed_materialized_in_return_statement() {
+            var test = @"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1 {
+        class TypeName {
+            public IEnumerable<int> MyCollectionProperty {
+                get { return new List<int>(); }
+            }
+            public IEnumerable<int> Add(IEnumerable<int> a, IEnumerable<int> b) {
+                var l1 = new List<int>().Select(x => x+1).ToArray();
+                return l1;
+            }
+            public static IEnumerable<int> Main() {
+                var t = new TypeName();
+                return Add(t.MyCollectionProperty, t.MyCollectionProperty);
+            }
+        }
+    }";
+            VerifyCSharpDiagnostic(test);
+        }
+
+        [TestMethod]
+        public void Values_coming_straight_from_property_call_indirectly_are_assumed_materialized() {
+            var test = @"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1 {
+        class TypeName {
+            public IEnumerable<int> MyCollectionProperty {
+                get { return new List<int>(); }
+            }
+            public IEnumerable<int> Add(IEnumerable<int> a, IEnumerable<int> b) {
+                var l1 = new List<int>().Select(x => x+1).ToArray();
+                return l1;
+            }
+            public static void Main() {
+                var t = new TypeName();
+                var a = t.MyCollectionProperty;
+                var b = t.MyCollectionProperty;
+                var x = Add(a, b);
+            }
+        }
+    }";
+            VerifyCSharpDiagnostic(test);
+        }
+
+        [TestMethod]
+        public void Values_coming_straight_from_method_params_directly_are_assumed_materialized() {
             var test = @"
     using System;
     using System.Collections.Generic;
@@ -226,22 +398,20 @@ namespace MaterializeCollectionsAnalyzer.Test {
     namespace ConsoleApplication1 {
         class TypeName {
             public IEnumerable<int> Add(IEnumerable<int> a, IEnumerable<int> b) {
-                var l1 = new List<int>().Select(x => x+1);
+                var l1 = new List<int>().Select(x => x+1).ToArray();
                 return l1;
+            }
+            public static void Main(IEnumerable<int> a, IEnumerable<int> b) {
+                var x = Add(a, b);
             }
         }
     }";
-            var expected = new DiagnosticResult {
-                Id = "MaterializeCollectionsAnalyzer",
-                Message = "Collection should be materialized to a specific type",
-                Severity = DiagnosticSeverity.Warning,
-                Locations =
-                    new[] {
-                            new DiagnosticResultLocation("Test0.cs", 13, 24)
-                        }
-            };
-            VerifyCSharpDiagnostic(test, expected);
-            var fixtest = @"
+            VerifyCSharpDiagnostic(test);
+        }
+
+        [TestMethod]
+        public void Values_coming_straight_from_method_params_indirectly_are_assumed_materialized() {
+            var test = @"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -252,12 +422,17 @@ namespace MaterializeCollectionsAnalyzer.Test {
     namespace ConsoleApplication1 {
         class TypeName {
             public IEnumerable<int> Add(IEnumerable<int> a, IEnumerable<int> b) {
-                var l1 = new List<int>().Select(x => x+1);
-                return l1.ToArray();
+                var l1 = new List<int>().Select(x => x+1).ToArray();
+                return l1;
+            }
+            public static void Main(IEnumerable<int> a, IEnumerable<int> b) {
+                var i = a;
+                var j = b;
+                var x = Add(i, j);
             }
         }
     }";
-            VerifyCSharpFix(test, fixtest);
+            VerifyCSharpDiagnostic(test);
         }
 
         protected override CodeFixProvider GetCSharpCodeFixProvider() {
