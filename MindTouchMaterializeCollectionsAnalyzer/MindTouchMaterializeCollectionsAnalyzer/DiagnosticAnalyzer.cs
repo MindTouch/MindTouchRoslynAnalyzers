@@ -43,36 +43,29 @@ namespace MindTouchMaterializeCollectionsAnalyzer {
 
             // check to see if the invocation target is in the current assembly
             var invocationInfo = context.SemanticModel.GetSymbolInfo(node);
-            if(invocationInfo.Symbol == null) {
+            if(!invocationInfo.Symbol?.ContainingAssembly.Name.Equals(context.SemanticModel.Compilation.AssemblyName) ?? true) {
                 return;
             }
-            if(!invocationInfo.Symbol.ContainingAssembly.Name.Equals(context.SemanticModel.Compilation.AssemblyName)) {
-                return;
-            }
+            foreach(var argument in from invocationNode in node.DescendantNodes()
 
-            // find all arguments
-            var argNodes =
-                node.DescendantNodes()
-                .Where(x => x.Kind() == SyntaxKind.Argument)
-                .Select(x => x.DescendantNodes().FirstOrDefault())
-                .Where(x => x != null)
-                .ToImmutableArray();
-            if(argNodes.Any()) {
-                foreach(var argument in argNodes) {
+                                    // find all arguments
+                                    where invocationNode.Kind() == SyntaxKind.Argument
+                                    let argumentDescendantNode = invocationNode.DescendantNodes().FirstOrDefault()
+                                    where argumentDescendantNode != null
 
-                    // do not evaluate out parameters on method invocations
-                    if(argument.Parent.GetFirstToken().Kind() == SyntaxKind.OutKeyword) {
-                        continue;
-                    }
-                    var typeInfo = semanticModel.GetTypeInfo(argument);
-                    
-                    // check if the argument type is IEnumerable, and if it is abstract
-                    if(MaterializedCollectionsUtils.IsAbstractCollectionType(typeInfo)) {
-                        if(MaterializedCollectionsUtils.ShouldReportOnCollectionNode(semanticModel, argument)) {
-                            ReportDiagnostic(context, argument.GetLocation());
-                        }
-                    }
-                }
+                                    // do not evaluate out parameters on method invocations
+                                    where argumentDescendantNode.Parent.GetFirstToken().Kind() != SyntaxKind.OutKeyword
+
+                                    // check if the argument type is IEnumerable, and if it is abstract
+                                    let typeInfo = semanticModel.GetTypeInfo(argumentDescendantNode)
+
+                                    // TODO (2016-02-25, steveb): concrete classes that implement IEnumerable<> may be lazy; this check doesn't account for that
+                                    where MaterializedCollectionsUtils.IsAbstractCollectionType(typeInfo)
+
+                                    where MaterializedCollectionsUtils.ShouldReportOnCollectionNode(semanticModel, argumentDescendantNode)
+                                    select argumentDescendantNode
+            ) {
+                ReportDiagnostic(context, argument.GetLocation());
             }
         }
 
@@ -96,7 +89,7 @@ namespace MindTouchMaterializeCollectionsAnalyzer {
         }
 
         //--- Fields ---
-        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get { return ImmutableArray.Create(Rule); } }
+        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(Rule);
 
         //--- Methods ---
         public override void Initialize(AnalysisContext context) {
