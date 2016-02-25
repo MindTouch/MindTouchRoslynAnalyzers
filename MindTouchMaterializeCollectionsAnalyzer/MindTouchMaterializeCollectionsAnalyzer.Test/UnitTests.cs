@@ -206,7 +206,7 @@ namespace MindTouchMaterializeCollectionsAnalyzer.Test {
     }";
             var expected = new DiagnosticResult {
                 Id = "MaterializeCollectionsAnalyzer",
-                Message = "Collection should be materialized to a specific type",
+                Message = "Collection may or may not be materialized",
                 Severity = DiagnosticSeverity.Info,
                 Locations =
                     new[] {
@@ -263,7 +263,7 @@ namespace MindTouchMaterializeCollectionsAnalyzer.Test {
     }";
             var expected = new DiagnosticResult {
                 Id = "MaterializeCollectionsAnalyzer",
-                Message = "Collection should be materialized to a specific type",
+                Message = "Collection may or may not be materialized",
                 Severity = DiagnosticSeverity.Info,
                 Locations =
                     new[] {
@@ -315,7 +315,7 @@ namespace MindTouchMaterializeCollectionsAnalyzer.Test {
     }";
             var expected = new DiagnosticResult {
                 Id = "MaterializeCollectionsAnalyzer",
-                Message = "Collection should be materialized to a specific type",
+                Message = "Collection may or may not be materialized",
                 Severity = DiagnosticSeverity.Info,
                 Locations =
                     new[] {
