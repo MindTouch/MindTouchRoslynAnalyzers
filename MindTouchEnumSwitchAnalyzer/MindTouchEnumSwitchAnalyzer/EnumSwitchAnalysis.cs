@@ -26,6 +26,8 @@ namespace MindTouchEnumSwitchAnalyzer {
 
         //--- Class Methods ---
         public static IEnumerable<ISymbol> GetMissingEnumMembers(SyntaxNode switchNode, SemanticModel semanticModel, out IdentifierNameSyntax switchVariable) {
+
+            // TODO (2016-02-25, steveb): what if the swich calls a function instead?
             switchVariable = switchNode.DescendantNodes().OfType<IdentifierNameSyntax>().First();
             var switchVariableTypeInfo = semanticModel.GetTypeInfo(switchVariable);
 
