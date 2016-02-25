@@ -25,22 +25,27 @@ namespace MindTouchEnumSwitchAnalyzer {
     internal class EnumSwitchAnalysis {
 
         //--- Class Methods ---
-        public static IEnumerable<ISymbol> GetMissingEnumMembers(SyntaxNode switchNode, SemanticModel semanticModel, out IdentifierNameSyntax switchVariable) {
-            switchVariable = switchNode.DescendantNodes().OfType<IdentifierNameSyntax>().First();
+        public static IEnumerable<ISymbol> GetMissingEnumMembers(SwitchStatementSyntax switchNode, SemanticModel semanticModel, out IdentifierNameSyntax switchVariable) {
+
+            // TODO (2016-02-25, steveb): what if the swich calls a function instead?
+            switchVariable = switchNode.Expression as IdentifierNameSyntax;
+            if(switchVariable == null) {
+                return Enumerable.Empty<ISymbol>();
+            }
             var switchVariableTypeInfo = semanticModel.GetTypeInfo(switchVariable);
 
             // check if we are switching over an enum
-            if(switchVariableTypeInfo.Type != null && switchVariableTypeInfo.Type.TypeKind == TypeKind.Enum) {
+            if((switchVariableTypeInfo.Type != null) && (switchVariableTypeInfo.Type.TypeKind == TypeKind.Enum)) {
 
                 // get all the enum values
                 var enumMembers = switchVariableTypeInfo.Type.GetMembers().Where(x => x.Kind == SymbolKind.Field).ToImmutableArray();
 
                 // get all case statements
-                var caseSwitchLabels = switchNode
-                    .DescendantNodes().OfType<CaseSwitchLabelSyntax>()
-                    .Select(x => x.DescendantNodes().OfType<MemberAccessExpressionSyntax>().FirstOrDefault())
-                    .Where(x => x != null)
-                    .Select(x => semanticModel.GetSymbolInfo(x).Symbol)
+                var caseSwitchLabels = switchNode.Sections
+                    .SelectMany(section => section.Labels)
+                    .Select(label => label.DescendantNodes().OfType<MemberAccessExpressionSyntax>().FirstOrDefault())
+                    .Where(memberAccess => memberAccess != null)
+                    .Select(memberAccess => semanticModel.GetSymbolInfo(memberAccess).Symbol)
                     .ToImmutableHashSet();
 
                 // make sure we have all cases covered

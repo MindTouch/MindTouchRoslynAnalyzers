@@ -25,14 +25,14 @@ namespace MindTouchEnumSwitchAnalyzer.Test {
 
     [TestClass]
     public class UnitTest : CodeFixVerifier {
-        
+
         [TestMethod]
         public void No_diagnostics_when_all_cases_covered() {
             var test = @"
     using System;
     namespace Application {
         
-        Enum MyEnum { A, B, C, D, E, F };
+        enum MyEnum { A, B, C, D, E, F };
 
         class MyClass {
             public static void Function() {
@@ -51,7 +51,7 @@ namespace MindTouchEnumSwitchAnalyzer.Test {
     }";
             VerifyCSharpDiagnostic(test);
         }
-        
+
         [TestMethod]
         public void Diagnostics_and_code_fix_when_enum_value_missing() {
             var test = @"

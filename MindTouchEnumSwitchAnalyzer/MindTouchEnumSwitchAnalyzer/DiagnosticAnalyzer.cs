@@ -28,21 +28,20 @@ namespace MindTouchEnumSwitchAnalyzer {
     public class EnumSwitchAnalyzerAnalyzer : DiagnosticAnalyzer {
 
         //--- Constants ---
-        public const string DiagnosticId = "EnumSwitchAnalyzer";
+        public const string DIAGNOSTIC_ID = "EnumSwitchAnalyzer";
+        private const string Category = "Correctness";
 
         //--- Class Fields ---
         private static readonly LocalizableString Title = new LocalizableResourceString(nameof(Resources.AnalyzerTitle), Resources.ResourceManager, typeof(Resources));
         private static readonly LocalizableString MessageFormat = new LocalizableResourceString(nameof(Resources.AnalyzerMessageFormat), Resources.ResourceManager, typeof(Resources));
         private static readonly LocalizableString Description = new LocalizableResourceString(nameof(Resources.AnalyzerDescription), Resources.ResourceManager, typeof(Resources));
-        private const string Category = "Correctness";
-        private static readonly DiagnosticDescriptor Rule = new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Error, isEnabledByDefault: true, description: Description);
-        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get { return ImmutableArray.Create(Rule); } }
+        private static readonly DiagnosticDescriptor Rule = new DiagnosticDescriptor(DIAGNOSTIC_ID, Title, MessageFormat, Category, DiagnosticSeverity.Error, isEnabledByDefault: true, description: Description);
 
         //--- Class Methods ---
         private static void AnalyzeSwitchStatement(SyntaxNodeAnalysisContext context) {
             var semanticModel = context.SemanticModel;
             IdentifierNameSyntax switchVariable;
-            var missingMembers = EnumSwitchAnalysis.GetMissingEnumMembers(context.Node, semanticModel, out switchVariable);
+            var missingMembers = EnumSwitchAnalysis.GetMissingEnumMembers((SwitchStatementSyntax)context.Node, semanticModel, out switchVariable);
             if(missingMembers.Any()) {
                 var switchVariableTypeInfo = semanticModel.GetTypeInfo(switchVariable);
                 var diagnostic = Diagnostic.Create(Rule, context.Node.GetLocation(), switchVariableTypeInfo.Type.Name, string.Join(", ", missingMembers.Select(x => x.Name).ToImmutableArray()));
@@ -50,9 +49,10 @@ namespace MindTouchEnumSwitchAnalyzer {
             }
         }
 
+        //--- Properties ---
+        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(Rule);
+
         //--- Methods ---
-        public override void Initialize(AnalysisContext context) {
-            context.RegisterSyntaxNodeAction(AnalyzeSwitchStatement, SyntaxKind.SwitchStatement);
-        }
+        public override void Initialize(AnalysisContext context) => context.RegisterSyntaxNodeAction(AnalyzeSwitchStatement, SyntaxKind.SwitchStatement);
     }
 }
