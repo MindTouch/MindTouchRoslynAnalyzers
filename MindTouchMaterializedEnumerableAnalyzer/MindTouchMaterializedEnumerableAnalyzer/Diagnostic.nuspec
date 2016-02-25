@@ -1,19 +1,19 @@
 ﻿<?xml version="1.0"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
-    <id>MindTouchMaterializeCollectionsAnalyzer</id>
+    <id>MindTouchMaterializedEnumerableAnalyzer</id>
     <version>1.0.0.0</version>
-    <title>MindTouchMaterializeCollectionsAnalyzer</title>
-    <authors>Admin</authors>
-    <owners>Admin</owners>
+    <title>MindTouchMaterializedEnumerableAnalyzer</title>
+    <authors>Yuri Gorokhov</authors>
+    <owners>Yuri Gorokhov</owners>
     <licenseUrl>https://github.com/MindTouch/RoslynAnalyzers/blob/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/MindTouch/RoslynAnalyzers/</projectUrl>
     <iconUrl>http://ICON_URL_HERE_OR_DELETE_THIS_LINE</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>MindTouchMaterializeCollectionsAnalyzer</description>
+    <description>MindTouchMaterializedEnumerableAnalyzer</description>
     <releaseNotes>Summary of changes made in this release of the package.</releaseNotes>
     <copyright>Copyright</copyright>
-    <tags>MindTouchMaterializeCollectionsAnalyzer, analyzers</tags>
+    <tags>MindTouchMaterializedEnumerableAnalyzer, analyzers</tags>
     <frameworkAssemblies>
       <frameworkAssembly assemblyName="System" targetFramework="" />
     </frameworkAssemblies>

@@ -22,7 +22,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace MindTouchMaterializeCollectionsAnalyzer {
+namespace MindTouchMaterializedEnumerableAnalyzer {
     internal class MaterializedCollectionsUtils {
 
         //--- Class Methods ---

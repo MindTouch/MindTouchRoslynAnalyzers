@@ -9,11 +9,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MindTouchEnumSwitchAnalyzer
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MindTouchEnumSwitchAnalyzer.Vsix", "MindTouchEnumSwitchAnalyzer\MindTouchEnumSwitchAnalyzer.Vsix\MindTouchEnumSwitchAnalyzer.Vsix.csproj", "{11BB92A0-7C56-44E6-BE63-55AE8F0185D5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MindTouchMaterializeCollectionsAnalyzer", "MindTouchMaterializeCollectionsAnalyzer\MindTouchMaterializeCollectionsAnalyzer\MindTouchMaterializeCollectionsAnalyzer.csproj", "{CEFDD049-E7DE-4503-AC24-2615EB6B1148}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MindTouchMaterializedEnumerableAnalyzer", "MindTouchMaterializedEnumerableAnalyzer\MindTouchMaterializedEnumerableAnalyzer\MindTouchMaterializedEnumerableAnalyzer.csproj", "{CEFDD049-E7DE-4503-AC24-2615EB6B1148}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MindTouchMaterializeCollectionsAnalyzer.Test", "MindTouchMaterializeCollectionsAnalyzer\MindTouchMaterializeCollectionsAnalyzer.Test\MindTouchMaterializeCollectionsAnalyzer.Test.csproj", "{8B713886-9740-453A-B438-7EC8F68889DA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MindTouchMaterializedEnumerableAnalyzer.Test", "MindTouchMaterializedEnumerableAnalyzer\MindTouchMaterializedEnumerableAnalyzer.Test\MindTouchMaterializedEnumerableAnalyzer.Test.csproj", "{8B713886-9740-453A-B438-7EC8F68889DA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MindTouchMaterializeCollectionsAnalyzer.Vsix", "MindTouchMaterializeCollectionsAnalyzer\MindTouchMaterializeCollectionsAnalyzer.Vsix\MindTouchMaterializeCollectionsAnalyzer.Vsix.csproj", "{EBEDB89C-1FA9-449F-866E-16B9B2A69726}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MindTouchMaterializedEnumerableAnalyzer.Vsix", "MindTouchMaterializedEnumerableAnalyzer\MindTouchMaterializedEnumerableAnalyzer.Vsix\MindTouchMaterializedEnumerableAnalyzer.Vsix.csproj", "{EBEDB89C-1FA9-449F-866E-16B9B2A69726}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
