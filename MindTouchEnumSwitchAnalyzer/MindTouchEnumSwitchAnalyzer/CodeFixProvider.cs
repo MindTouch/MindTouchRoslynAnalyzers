@@ -37,7 +37,7 @@ namespace MindTouchEnumSwitchAnalyzer {
         //--- Class Methods ---
         private static async Task<Document> AddMissingEnumFields(Document document, SyntaxToken typeDecl, CancellationToken cancellationToken) {
             var semanticModel = await document.GetSemanticModelAsync(cancellationToken);
-            var node = typeDecl.Parent;
+            var node = (SwitchStatementSyntax)typeDecl.Parent;
             IdentifierNameSyntax switchVariable;
             var missingMembers = EnumSwitchAnalysis.GetMissingEnumMembers(node, semanticModel, out switchVariable);
             if(missingMembers.Any()) {
@@ -104,7 +104,7 @@ namespace MindTouchEnumSwitchAnalyzer {
             var diagnostic = context.Diagnostics.First();
             var diagnosticSpan = diagnostic.Location.SourceSpan;
 
-            // Find the switch statment identified by the diagnostic.
+            // Find the switch statement identified by the diagnostic.
             var switchStatment = root.FindToken(diagnosticSpan.Start);
 
             // Register a code action that will invoke the fix.

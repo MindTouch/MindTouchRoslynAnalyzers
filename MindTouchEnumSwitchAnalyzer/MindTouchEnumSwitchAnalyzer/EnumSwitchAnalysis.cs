@@ -25,10 +25,13 @@ namespace MindTouchEnumSwitchAnalyzer {
     internal class EnumSwitchAnalysis {
 
         //--- Class Methods ---
-        public static IEnumerable<ISymbol> GetMissingEnumMembers(SyntaxNode switchNode, SemanticModel semanticModel, out IdentifierNameSyntax switchVariable) {
+        public static IEnumerable<ISymbol> GetMissingEnumMembers(SwitchStatementSyntax switchNode, SemanticModel semanticModel, out IdentifierNameSyntax switchVariable) {
 
             // TODO (2016-02-25, steveb): what if the swich calls a function instead?
-            switchVariable = switchNode.DescendantNodes().OfType<IdentifierNameSyntax>().First();
+            switchVariable = switchNode.Expression as IdentifierNameSyntax;
+            if(switchVariable == null) {
+                return Enumerable.Empty<ISymbol>();
+            }
             var switchVariableTypeInfo = semanticModel.GetTypeInfo(switchVariable);
 
             // check if we are switching over an enum
@@ -38,10 +41,11 @@ namespace MindTouchEnumSwitchAnalyzer {
                 var enumMembers = switchVariableTypeInfo.Type.GetMembers().Where(x => x.Kind == SymbolKind.Field).ToImmutableArray();
 
                 // get all case statements
-                var caseSwitchLabels = switchNode
-                    .DescendantNodes().OfType<CaseSwitchLabelSyntax>()
-                    .SelectMany(x => x.DescendantNodes().OfType<MemberAccessExpressionSyntax>())
-                    .Select(x => semanticModel.GetSymbolInfo(x).Symbol)
+                var caseSwitchLabels = switchNode.Sections
+                    .SelectMany(section => section.Labels)
+                    .Select(label => label.DescendantNodes().OfType<MemberAccessExpressionSyntax>().FirstOrDefault())
+                    .Where(memberAccess => memberAccess != null)
+                    .Select(memberAccess => semanticModel.GetSymbolInfo(memberAccess).Symbol)
                     .ToImmutableHashSet();
 
                 // make sure we have all cases covered

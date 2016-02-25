@@ -41,7 +41,7 @@ namespace MindTouchEnumSwitchAnalyzer {
         private static void AnalyzeSwitchStatement(SyntaxNodeAnalysisContext context) {
             var semanticModel = context.SemanticModel;
             IdentifierNameSyntax switchVariable;
-            var missingMembers = EnumSwitchAnalysis.GetMissingEnumMembers(context.Node, semanticModel, out switchVariable);
+            var missingMembers = EnumSwitchAnalysis.GetMissingEnumMembers((SwitchStatementSyntax)context.Node, semanticModel, out switchVariable);
             if(missingMembers.Any()) {
                 var switchVariableTypeInfo = semanticModel.GetTypeInfo(switchVariable);
                 var diagnostic = Diagnostic.Create(Rule, context.Node.GetLocation(), switchVariableTypeInfo.Type.Name, string.Join(", ", missingMembers.Select(x => x.Name).ToImmutableArray()));
