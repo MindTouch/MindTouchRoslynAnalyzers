@@ -30,7 +30,7 @@ namespace MindTouchEnumSwitchAnalyzer {
             var switchVariableTypeInfo = semanticModel.GetTypeInfo(switchVariable);
 
             // check if we are switching over an enum
-            if(switchVariableTypeInfo.Type.TypeKind == TypeKind.Enum) {
+            if(switchVariableTypeInfo.Type != null && switchVariableTypeInfo.Type.TypeKind == TypeKind.Enum) {
 
                 // get all the enum values
                 var enumMembers = switchVariableTypeInfo.Type.GetMembers().Where(x => x.Kind == SymbolKind.Field).ToImmutableArray();
