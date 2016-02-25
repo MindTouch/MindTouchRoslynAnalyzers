@@ -70,7 +70,7 @@ namespace MindTouchMaterializeCollectionsAnalyzer {
                     var containingClass = declaration?.GetSyntax().FirstAncestorOrSelf<MethodDeclarationSyntax>();
                     var localAssignment = containingClass?.DescendantNodes().OfType<AssignmentExpressionSyntax>()
                         .Where(x => x.Left.IsKind(SyntaxKind.IdentifierName))
-                        .FirstOrDefault(x => (x.Left as IdentifierNameSyntax).Identifier.Text.Equals(((IdentifierNameSyntax)argument).Identifier.Text));
+                        .LastOrDefault(x => (x.Left as IdentifierNameSyntax).Identifier.Text.Equals(((IdentifierNameSyntax)argument).Identifier.Text));
                     if(localAssignment != null) {
                         return ShouldReportOnCollectionNode(semanticModel, localAssignment.Right);
                     }
