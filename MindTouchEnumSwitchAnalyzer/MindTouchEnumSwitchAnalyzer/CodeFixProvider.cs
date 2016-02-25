@@ -32,8 +32,8 @@ namespace MindTouchEnumSwitchAnalyzer {
     public class EnumSwitchAnalyzerCodeFixProvider : CodeFixProvider {
 
         //--- Constants ---
-        private const string title = "Add missing enum fields";
-        
+        private const string Title = "Add missing enum fields";
+
         //--- Class Methods ---
         private static async Task<Document> AddMissingEnumFields(Document document, SyntaxToken typeDecl, CancellationToken cancellationToken) {
             var semanticModel = await document.GetSemanticModelAsync(cancellationToken);
@@ -60,7 +60,8 @@ namespace MindTouchEnumSwitchAnalyzer {
                             SyntaxFactory.IdentifierName(switchVariableTypeInfo.Type.Name),
                             SyntaxFactory.IdentifierName(missingMember.Name)
                         ),
-                        SyntaxFactory.Token(SyntaxKind.ColonToken))
+                        SyntaxFactory.Token(SyntaxKind.ColonToken)
+                    )
                 ).Select(caseSection => SyntaxFactory.SwitchSection(
                     SyntaxFactory.List<SwitchLabelSyntax>(new[] { caseSection }),
                     SyntaxFactory.List<StatementSyntax>().Add(
@@ -78,16 +79,16 @@ namespace MindTouchEnumSwitchAnalyzer {
                 var tree = await document.GetSyntaxTreeAsync(cancellationToken);
                 var root = (CompilationUnitSyntax)tree.GetRoot(cancellationToken);
                 var switchStatement = SyntaxFactory.SwitchStatement(
-                        SyntaxFactory.IdentifierName(switchVariable.Identifier)
-                            .WithLeadingTrivia(switchVariable.GetLeadingTrivia())
-                            .WithTrailingTrivia(switchVariable.GetTrailingTrivia())
-                    )
-                        .WithSections(new SyntaxList<SwitchSectionSyntax>()
-                            .AddRange(existingSections)
-                            .AddRange(newCaseStatements)
-                            .AddRange(defaultSection == null ? Enumerable.Empty<SwitchSectionSyntax>() : new [] { defaultSection }))
-                        .WithLeadingTrivia(node.GetLeadingTrivia())
-                        .WithTrailingTrivia(node.GetTrailingTrivia());
+                    SyntaxFactory.IdentifierName(switchVariable.Identifier)
+                        .WithLeadingTrivia(switchVariable.GetLeadingTrivia())
+                        .WithTrailingTrivia(switchVariable.GetTrailingTrivia())
+                ).WithSections(
+                    new SyntaxList<SwitchSectionSyntax>()
+                        .AddRange(existingSections)
+                        .AddRange(newCaseStatements)
+                        .AddRange(defaultSection == null ? Enumerable.Empty<SwitchSectionSyntax>() : new [] { defaultSection })
+                ).WithLeadingTrivia(node.GetLeadingTrivia())
+                    .WithTrailingTrivia(node.GetTrailingTrivia());
                 root = root.ReplaceNode(node, switchStatement);
                 return document.WithSyntaxRoot(root);
             }
@@ -95,13 +96,8 @@ namespace MindTouchEnumSwitchAnalyzer {
         }
 
         //--- Methods ---
-        public sealed override ImmutableArray<string> FixableDiagnosticIds {
-            get { return ImmutableArray.Create(EnumSwitchAnalyzerAnalyzer.DiagnosticId); }
-        }
-
-        public sealed override FixAllProvider GetFixAllProvider() {
-            return WellKnownFixAllProviders.BatchFixer;
-        }
+        public sealed override ImmutableArray<string> FixableDiagnosticIds => ImmutableArray.Create(EnumSwitchAnalyzerAnalyzer.DIAGNOSTIC_ID);
+        public sealed override FixAllProvider GetFixAllProvider() => WellKnownFixAllProviders.BatchFixer;
 
         public sealed override async Task RegisterCodeFixesAsync(CodeFixContext context) {
             var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);
@@ -112,12 +108,11 @@ namespace MindTouchEnumSwitchAnalyzer {
             var switchStatment = root.FindToken(diagnosticSpan.Start);
 
             // Register a code action that will invoke the fix.
-            context.RegisterCodeFix(
-                CodeAction.Create(
-                    title: title,
-                    createChangedDocument: c => AddMissingEnumFields(context.Document, switchStatment, c),
-                    equivalenceKey: title),
-                diagnostic);
+            context.RegisterCodeFix(CodeAction.Create(
+                title: Title,
+                createChangedDocument: c => AddMissingEnumFields(context.Document, switchStatment, c),
+                equivalenceKey: Title
+            ), diagnostic);
         }
     }
 }
