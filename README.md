@@ -3,6 +3,10 @@ RoslynAnalyzers
 
 C# code analyzers built on the Roslyn compiler.
 
+https://ci.appveyor.com/api/projects/status/lj3g8340v18oewap?svg=true
+
+[![Build status](https://ci.appveyor.com/api/projects/status/lj3g8340v18oewap?svg=true)](https://ci.appveyor.com/project/yurigorokhov/roslynanalyzers)
+
 MindTouchEnumSwitchAnalyzer
 ---------------------------
 
