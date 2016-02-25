@@ -26,16 +26,8 @@ namespace MindTouchMaterializedEnumerableAnalyzer {
     internal class MaterializedCollectionsUtils {
 
         //--- Class Methods ---
-        internal static bool IsCollection(ITypeSymbol symbol) {
-            return (symbol != null && symbol.Interfaces.Any(x => x.Name == typeof(IEnumerable).Name || x.Name == typeof(IEnumerable<>).Name));
-        }
-
-        internal static bool IsAbstractCollectionType(TypeInfo typeInfo) {
-            if(typeInfo.Type == null || typeInfo.ConvertedType == null) {
-                return false;
-            }
-            return typeInfo.Type.IsAbstract && MaterializedCollectionsUtils.IsCollection(typeInfo.ConvertedType);
-        }
+        internal static bool IsCollection(ITypeSymbol symbol) => (symbol != null) && symbol.Interfaces.Any(x => (x.Name == typeof(IEnumerable).Name) || (x.Name == typeof(IEnumerable<>).Name));
+        internal static bool IsAbstractCollectionType(TypeInfo typeInfo) => (typeInfo.Type != null) && (typeInfo.ConvertedType != null) && (typeInfo.Type.IsAbstract && IsCollection(typeInfo.ConvertedType));
 
         internal static bool ShouldReportOnCollectionNode(SemanticModel semanticModel, SyntaxNode argument) {
             const bool returnIfUnknown = false;
@@ -44,7 +36,7 @@ namespace MindTouchMaterializedEnumerableAnalyzer {
             switch(argument.Kind()) {
             case SyntaxKind.InvocationExpression:
                 var methodCallInfo = semanticModel.GetSymbolInfo(argument);
-                if(methodCallInfo.Symbol != null && methodCallInfo.Symbol.Kind == SymbolKind.Method) {
+                if((methodCallInfo.Symbol != null) && (methodCallInfo.Symbol.Kind == SymbolKind.Method)) {
                     var mSymbol = (IMethodSymbol)methodCallInfo.Symbol;
 
                     // If the method is not an extension method, we assume it returned a materialized collection
@@ -78,7 +70,7 @@ namespace MindTouchMaterializedEnumerableAnalyzer {
                     var containingClass = declaration?.GetSyntax().FirstAncestorOrSelf<MethodDeclarationSyntax>();
                     var localAssignment = containingClass?.DescendantNodes().OfType<AssignmentExpressionSyntax>()
                         .Where(x => x.Left.IsKind(SyntaxKind.IdentifierName))
-                        .FirstOrDefault(x => (x.Left as IdentifierNameSyntax).Identifier.Text.Equals(((IdentifierNameSyntax)argument).Identifier.Text));
+                        .LastOrDefault(x => (x.Left as IdentifierNameSyntax).Identifier.Text.Equals(((IdentifierNameSyntax)argument).Identifier.Text));
                     if(localAssignment != null) {
                         return ShouldReportOnCollectionNode(semanticModel, localAssignment.Right);
                     }
