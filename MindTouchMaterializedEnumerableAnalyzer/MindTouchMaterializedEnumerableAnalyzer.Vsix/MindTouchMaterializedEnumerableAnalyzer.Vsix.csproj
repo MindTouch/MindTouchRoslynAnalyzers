@@ -13,8 +13,8 @@
     <ProjectGuid>{EBEDB89C-1FA9-449F-866E-16B9B2A69726}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MindTouchMaterializeCollectionsAnalyzer.Vsix</RootNamespace>
-    <AssemblyName>MindTouchMaterializeCollectionsAnalyzer.Vsix</AssemblyName>
+    <RootNamespace>MindTouchMaterializedEnumerableAnalyzer.Vsix</RootNamespace>
+    <AssemblyName>MindTouchMaterializedEnumerableAnalyzer.Vsix</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <GeneratePkgDefFile>false</GeneratePkgDefFile>
     <IncludeAssemblyInVSIXContainer>false</IncludeAssemblyInVSIXContainer>
@@ -52,9 +52,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MindTouchMaterializeCollectionsAnalyzer\MindTouchMaterializeCollectionsAnalyzer.csproj">
+    <ProjectReference Include="..\MindTouchMaterializedEnumerableAnalyzer\MindTouchMaterializedEnumerableAnalyzer.csproj">
       <Project>{CEFDD049-E7DE-4503-AC24-2615EB6B1148}</Project>
-      <Name>MindTouchMaterializeCollectionsAnalyzer</Name>
+      <Name>MindTouchMaterializedEnumerableAnalyzer</Name>
       <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
       <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
     </ProjectReference>

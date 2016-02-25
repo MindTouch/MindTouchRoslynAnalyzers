@@ -4,8 +4,8 @@
     <id>MindTouchEnumSwitchAnalyzer</id>
     <version>1.0.0.0</version>
     <title>MindTouchEnumSwitchAnalyzer</title>
-    <authors>Admin</authors>
-    <owners>Admin</owners>
+    <authors>Yuri Gorokhov</authors>
+    <owners>Yuri Gorokhov</owners>
     <licenseUrl>https://github.com/MindTouch/RoslynAnalyzers/blob/master/LICENSE</licenseUrl>
     <projectUrl>https://github.com/MindTouch/RoslynAnalyzers/</projectUrl>
     <iconUrl>http://ICON_URL_HERE_OR_DELETE_THIS_LINE</iconUrl>

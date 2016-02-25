@@ -14,14 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 using System.Collections.Immutable;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
 
-namespace MindTouchMaterializeCollectionsAnalyzer {
+namespace MindTouchMaterializedEnumerableAnalyzer {
 
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public class MaterializeCollectionsAnalyzerAnalyzer : DiagnosticAnalyzer {
