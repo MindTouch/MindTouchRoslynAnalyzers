@@ -71,7 +71,7 @@ namespace MindTouchMaterializeCollectionsAnalyzer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Collection should be materialized to a specific type.
+        ///   Looks up a localized string similar to Collection may or may not be materialized.
         /// </summary>
         internal static string AnalyzerMessageFormat {
             get {

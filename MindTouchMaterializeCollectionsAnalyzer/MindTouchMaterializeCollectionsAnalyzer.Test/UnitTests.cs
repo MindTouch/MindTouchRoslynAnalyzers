@@ -207,7 +207,7 @@ namespace MindTouchMaterializeCollectionsAnalyzer.Test {
             var expected = new DiagnosticResult {
                 Id = "MaterializeCollectionsAnalyzer",
                 Message = "Collection should be materialized to a specific type",
-                Severity = DiagnosticSeverity.Warning,
+                Severity = DiagnosticSeverity.Info,
                 Locations =
                     new[] {
                             new DiagnosticResultLocation("Test0.cs", 18, 25)
@@ -264,7 +264,7 @@ namespace MindTouchMaterializeCollectionsAnalyzer.Test {
             var expected = new DiagnosticResult {
                 Id = "MaterializeCollectionsAnalyzer",
                 Message = "Collection should be materialized to a specific type",
-                Severity = DiagnosticSeverity.Warning,
+                Severity = DiagnosticSeverity.Info,
                 Locations =
                     new[] {
                             new DiagnosticResultLocation("Test0.cs", 18, 25)
@@ -316,7 +316,7 @@ namespace MindTouchMaterializeCollectionsAnalyzer.Test {
             var expected = new DiagnosticResult {
                 Id = "MaterializeCollectionsAnalyzer",
                 Message = "Collection should be materialized to a specific type",
-                Severity = DiagnosticSeverity.Warning,
+                Severity = DiagnosticSeverity.Info,
                 Locations =
                     new[] {
                             new DiagnosticResultLocation("Test0.cs", 13, 24)

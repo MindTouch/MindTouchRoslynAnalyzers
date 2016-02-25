@@ -19,7 +19,6 @@ using System.Collections.Immutable;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace MindTouchMaterializeCollectionsAnalyzer {
@@ -68,8 +67,8 @@ namespace MindTouchMaterializeCollectionsAnalyzer {
                     var typeInfo = semanticModel.GetTypeInfo(argument);
                     
                     // check if the argument type is IEnumerable, and if it is abstract
-                    if(IsAbstractCollectionType(typeInfo)) {
-                        if(ShouldReportOnCollectionNode(semanticModel, argument)) {
+                    if(MaterializedCollectionsUtils.IsAbstractCollectionType(typeInfo)) {
+                        if(MaterializedCollectionsUtils.ShouldReportOnCollectionNode(semanticModel, argument)) {
                             ReportDiagnostic(context, argument.GetLocation());
                         }
                     }
@@ -84,78 +83,16 @@ namespace MindTouchMaterializeCollectionsAnalyzer {
                 return;
             }
             var typeInfo = semanticModel.GetTypeInfo(node);
-            if(IsAbstractCollectionType(typeInfo)) {
-                if(ShouldReportOnCollectionNode(semanticModel, node)) {
+            if(MaterializedCollectionsUtils.IsAbstractCollectionType(typeInfo)) {
+                if(MaterializedCollectionsUtils.ShouldReportOnCollectionNode(semanticModel, node)) {
                     ReportDiagnostic(context, node.GetLocation());
                 }
             }
         }
 
-        private static bool ShouldReportOnCollectionNode(SemanticModel semanticModel, SyntaxNode argument) {
-            const bool returnIfUnknown = false;
-
-            // if the variable is an invocation syntax we can assume that it was returned materialized, if it's not an extension method
-            switch(argument.Kind()) {
-            case SyntaxKind.InvocationExpression:
-                var methodCallInfo = semanticModel.GetSymbolInfo(argument);
-                if(methodCallInfo.Symbol != null && methodCallInfo.Symbol.Kind == SymbolKind.Method) {
-                    var mSymbol = (IMethodSymbol)methodCallInfo.Symbol;
-
-                    // If the method is not an extension method, we assume it returned a materialized collection
-                    return mSymbol.IsExtensionMethod && mSymbol.ContainingNamespace.ToDisplayString().Equals("System.Linq");
-                }
-                break;
-            case SyntaxKind.IdentifierName:
-                var identifierInfo = semanticModel.GetSymbolInfo(argument);
-
-                // if this identifier came straight from a parameter, assume it is materialized
-                if(identifierInfo.Symbol != null && identifierInfo.Symbol.Kind == SymbolKind.Parameter) {
-
-                    //TODO: check if parameter was re-assigned
-                    return false;
-                }
-
-                // if this is a local identifier, look at where it is defined
-                if(identifierInfo.Symbol != null && identifierInfo.Symbol.Kind == SymbolKind.Local) {
-                    var declaration = identifierInfo.Symbol.DeclaringSyntaxReferences.FirstOrDefault();
-
-                    // if the declaration is an equals expression, dive into it.
-                    var equalsExpression = declaration?.GetSyntax()
-                        .ChildNodes()
-                        .FirstOrDefault(x => x.Kind() == SyntaxKind.EqualsValueClause);
-                    var firstChild = equalsExpression?.ChildNodes().FirstOrDefault();
-                    if(firstChild != null) {
-                        return ShouldReportOnCollectionNode(semanticModel, firstChild);
-                    }
-
-                    // if the variable was assigned somewhere else, find it
-                    var containingClass = declaration?.GetSyntax().FirstAncestorOrSelf<MethodDeclarationSyntax>();
-                    var localAssignment = containingClass?.DescendantNodes().OfType<AssignmentExpressionSyntax>()
-                        .Where(x => x.Left.IsKind(SyntaxKind.IdentifierName))
-                        .FirstOrDefault(x =>  (x.Left as IdentifierNameSyntax).Identifier.Text.Equals(((IdentifierNameSyntax)argument).Identifier.Text));
-                    if(localAssignment != null) {
-                        return ShouldReportOnCollectionNode(semanticModel, localAssignment.Right);
-                    }
-                }
-                break;
-            case SyntaxKind.SimpleMemberAccessExpression:
-                
-                // Assume that member accesses are returned materialized
-                return false;
-            }
-            return returnIfUnknown;
-        }
-
         private static void ReportDiagnostic(SyntaxNodeAnalysisContext context, Location location) {
             var diagnostic = Diagnostic.Create(Rule, location, "");
             context.ReportDiagnostic(diagnostic);
-        }
-        
-        private static bool IsAbstractCollectionType(TypeInfo typeInfo) {
-            if(typeInfo.Type == null || typeInfo.ConvertedType == null) {
-                return false;
-            }
-            return typeInfo.Type.IsAbstract && MaterializedCollectionsUtils.IsCollection(typeInfo.ConvertedType);
         }
 
         //--- Fields ---
