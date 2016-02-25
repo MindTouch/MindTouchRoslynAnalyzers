@@ -51,7 +51,136 @@ namespace MindTouchMaterializeCollectionsAnalyzer.Test {
     }";
             VerifyCSharpDiagnostic(test);
         }
-        
+
+        [TestMethod]
+        public void Calling_builtin_library_functions() {
+            var test = @"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1 {
+        class TypeName {
+            public void Test() {
+                var l1 = new List<string>().Select(x => x + x);
+                var x = string.Join(new [] {','}, l1);
+            }
+        }
+    }";
+            VerifyCSharpDiagnostic(test);
+        }
+
+        [TestMethod]
+        public void Return_with_turnary() {
+            var test = @"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1 {
+        class TypeName {
+            public IEnumerable<int> Test() {
+                var a = new List<int>();
+                return a.Any() ? a.Select(x => x+x).ToArray() : new int[0];
+            }
+        }
+    }";
+            VerifyCSharpDiagnostic(test);
+        }
+
+        [TestMethod]
+        public void Calling_user_defined_extension_functions() {
+            var test = @"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1 {
+
+        public static class IEnumerableIntExtensions {
+            public static IEnumerable<int> Square(this IEnumerable<int> data) {
+                return data.Select(x => x*x).ToArray();
+            }
+        }
+
+        class TypeName {
+            public IEnumerable<int> Test() {
+                var l1 = new List<int>().Select(x => x + x);
+                return l1.Square();
+            }
+        }
+    }";
+            VerifyCSharpDiagnostic(test);
+        }
+
+        [TestMethod]
+        public void Calling_user_defined_extension_functions_in_parameter() {
+            var test = @"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1 {
+
+        public static class IEnumerableIntExtensions {
+            public static IEnumerable<int> Square(this IEnumerable<int> data) {
+                return data.Select(x => x*x).ToArray();
+            }
+        }
+
+        class TypeName {
+            public void Add(IEnumerable<int> a, IEnumerable<int> b) {
+                return;
+            }
+            public IEnumerable<int> Test() {
+                var l1 = new List<int>().Select(x => x + x).Square();
+                return Add(l1, l1);
+            }
+        }
+    }";
+            VerifyCSharpDiagnostic(test);
+        }
+
+        [TestMethod]
+        public void Assignment_through_out() {
+            var test = @"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1 {
+        class TypeName {
+            public void SetCollection(out IEnumerable<int> b) { 
+                b = new List<int>();
+            }
+
+            public IEnumerable<int> Test() {
+                IEnumerable<int> a;
+                try {
+                    SetCollection(out a);
+                }
+                return a;
+            }
+        }
+    }";
+            VerifyCSharpDiagnostic(test);
+        }
+
         [TestMethod]
         public void Select_statement_is_detected_unmaterialized_collection() {
             var test = @"
@@ -234,6 +363,32 @@ namespace MindTouchMaterializeCollectionsAnalyzer.Test {
             }
             public static void Main() {
                 var x = Add(GetCollection(), GetCollection());
+            }
+        }
+    }";
+            VerifyCSharpDiagnostic(test);
+        }
+
+        [TestMethod]
+        public void Values_coming_from_instance_method() {
+            var test = @"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1 {
+        class TypeName {
+            private TypeName _t;
+
+            public IEnumerable<int> Add(IEnumerable<int> a, IEnumerable<int> b) {
+                var l1 = new List<int>().Select(x => x+1).ToArray();
+                return l1;
+            }
+            public static IEnumerable<int> Test() {
+                return _t.Add(new List<int>(), new List<int>());
             }
         }
     }";
@@ -429,6 +584,33 @@ namespace MindTouchMaterializeCollectionsAnalyzer.Test {
                 var i = a;
                 var j = b;
                 var x = Add(i, j);
+            }
+        }
+    }";
+            VerifyCSharpDiagnostic(test);
+        }
+
+        [TestMethod]
+        public void Parameters_that_are_out_variables_are_ignored() {
+            var test = @"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1 {
+        class TypeName {
+            public IEnumerable<int> Add(IEnumerable<int> a, out IEnumerable<int> b) {
+                b = new List<int>().Select(x => x+1).ToArray();
+                var l1 = new List<int>().Select(x => x+1).ToArray();
+                return l1;
+            }
+            public static void Main(IEnumerable<int> a, IEnumerable<int> b) {
+                var i = a;
+                IEnumerable<int> j;
+                var x = Add(i, out j);
             }
         }
     }";
