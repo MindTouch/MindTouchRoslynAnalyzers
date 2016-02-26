@@ -38,9 +38,10 @@ namespace MindTouchMaterializedEnumerableAnalyzer {
                 var methodCallInfo = semanticModel.GetSymbolInfo(argument);
                 if((methodCallInfo.Symbol != null) && (methodCallInfo.Symbol.Kind == SymbolKind.Method)) {
                     var mSymbol = (IMethodSymbol)methodCallInfo.Symbol;
+                    var typeInfo = semanticModel.GetTypeInfo(argument);
 
                     // If the method is not an extension method, we assume it returned a materialized collection
-                    return mSymbol.IsExtensionMethod && mSymbol.ContainingNamespace.ToDisplayString().Equals("System.Linq");
+                    return IsAbstractCollectionType(typeInfo) && mSymbol.IsExtensionMethod && mSymbol.ContainingNamespace.ToDisplayString().Equals("System.Linq");
                 }
                 break;
             case SyntaxKind.IdentifierName:

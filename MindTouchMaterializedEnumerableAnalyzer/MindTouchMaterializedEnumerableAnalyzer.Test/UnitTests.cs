@@ -182,6 +182,92 @@ namespace MindTouchMaterializedEnumerableAnalyzer.Test {
         }
 
         [TestMethod]
+        public void Last_assignment_is_detected_to_determine_materialized() {
+            var test = @"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1 {
+        class TypeName {
+            public void Add(IEnumerable<int> a, IEnumerable<int> b) {
+                return;
+            }
+
+            public void Test() {
+                IEnumerable<int> l1;
+                l1 = new List().Select(x => x+x);
+                l1 = l1.ToArray();
+                Add(l1, l1);
+            }
+        }
+    }";
+              VerifyCSharpDiagnostic(test);
+        }
+
+        [TestMethod]
+        public void Last_assignment_is_used_to_determine_ummaterialized() {
+            var test = @"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1 {
+        class TypeName {
+            public void Add(IEnumerable<int> a, IEnumerable<int> b) {
+                return;
+            }
+
+            public void Test() {
+                IEnumerable<int> l1;
+                l1 = l1.ToArray();
+                l1 = l1.Select(x => x+x);
+                Add(l1, null);
+            }
+        }
+    }";
+            var expected = new DiagnosticResult {
+                Id = "MaterializeCollectionsAnalyzer",
+                Message = "Collection may or may not be materialized",
+                Severity = DiagnosticSeverity.Warning,
+                Locations =
+                    new[] {
+                            new DiagnosticResultLocation("Test0.cs", 19, 21)
+                        }
+            };
+            VerifyCSharpDiagnostic(test, expected);
+            var fixtest = @"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1 {
+        class TypeName {
+            public void Add(IEnumerable<int> a, IEnumerable<int> b) {
+                return;
+            }
+
+            public void Test() {
+                IEnumerable<int> l1;
+                l1 = l1.ToArray();
+                l1 = l1.Select(x => x+x);
+                Add(l1.ToArray(), null);
+            }
+        }
+    }";
+            VerifyCSharpFix(test, fixtest);
+        }
+
+        [TestMethod]
         public void Select_statement_is_detected_unmaterialized_collection() {
             var test = @"
     using System;
