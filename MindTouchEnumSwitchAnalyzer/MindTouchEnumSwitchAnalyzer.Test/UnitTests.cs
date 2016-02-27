@@ -15,8 +15,11 @@
  * limitations under the License.
  */
 
+using System;
+using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeFixes;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TestHelper;
@@ -26,9 +29,20 @@ namespace MindTouchEnumSwitchAnalyzer.Test {
     [TestClass]
     public class UnitTest : CodeFixVerifier {
 
+        //--- Class Methods ---
+        private static string GetValidatedSourceCode(string source, string diagnosticIdToIgnore) {
+            var syntaxTree = CSharpSyntaxTree.ParseText(source, options: new CSharpParseOptions());
+            var firstDiagnostic = syntaxTree.GetDiagnostics().FirstOrDefault(diagnostic => diagnostic.Id != diagnosticIdToIgnore && diagnostic.Severity == DiagnosticSeverity.Error);
+            if(firstDiagnostic != null) {
+                throw new Exception($"C# code failed to compile: '{firstDiagnostic.GetMessage()}'");
+            }
+            return source;
+        }
+
+        //--- Methods ---
         [TestMethod]
         public void No_diagnostics_when_all_cases_covered() {
-            var test = @"
+            var test = GetValidatedSourceCode(@"
     using System;
     namespace Application {
         
@@ -48,13 +62,13 @@ namespace MindTouchEnumSwitchAnalyzer.Test {
                 }
             }
         }    
-    }";
+    }", EnumSwitchAnalyzerAnalyzer.DIAGNOSTIC_ID);
             VerifyCSharpDiagnostic(test);
         }
 
         [TestMethod]
         public void Diagnostics_and_code_fix_when_enum_value_missing() {
-            var test = @"
+            var test = GetValidatedSourceCode(@"
     using System;
     namespace Application {
 
@@ -66,7 +80,9 @@ namespace MindTouchEnumSwitchAnalyzer.Test {
             switch (e) 
             {
                 case MyEnum.A:
+                    break;
                 case MyEnum.B:
+                    break;
                 case MyEnum.C:
                 case MyEnum.D:
                 case MyEnum.E:
@@ -74,7 +90,7 @@ namespace MindTouchEnumSwitchAnalyzer.Test {
             }
         }
     }
-}";
+}", EnumSwitchAnalyzerAnalyzer.DIAGNOSTIC_ID);
             var expected = new DiagnosticResult {
                 Id = "EnumSwitchAnalyzer",
                 Message = string.Format("switch on enum 'MyEnum' is missing the following members: 'F'"),
@@ -85,7 +101,7 @@ namespace MindTouchEnumSwitchAnalyzer.Test {
                         }
             };
             VerifyCSharpDiagnostic(test, expected);
-            var fixtest = @"
+            var fixtest = GetValidatedSourceCode(@"
     using System;
     namespace Application {
 
@@ -97,7 +113,9 @@ namespace MindTouchEnumSwitchAnalyzer.Test {
             switch (e)
             {
                 case MyEnum.A:
+                    break;
                 case MyEnum.B:
+                    break;
                 case MyEnum.C:
                 case MyEnum.D:
                 case MyEnum.E:
@@ -107,13 +125,13 @@ namespace MindTouchEnumSwitchAnalyzer.Test {
             }
         }
     }
-}";
+}", EnumSwitchAnalyzerAnalyzer.DIAGNOSTIC_ID);
             VerifyCSharpFix(test, fixtest);
         }
 
         [TestMethod]
         public void Diagnostics_and_code_fix_when_enum_value_missing_with_default() {
-            var test = @"
+            var test = GetValidatedSourceCode(@"
     using System;
     namespace Application {
 
@@ -135,7 +153,7 @@ namespace MindTouchEnumSwitchAnalyzer.Test {
             }
         }
     }
-}";
+}", EnumSwitchAnalyzerAnalyzer.DIAGNOSTIC_ID);
             var expected = new DiagnosticResult {
                 Id = "EnumSwitchAnalyzer",
                 Message = string.Format("switch on enum 'MyEnum' is missing the following members: 'F'"),
@@ -146,7 +164,7 @@ namespace MindTouchEnumSwitchAnalyzer.Test {
                         }
             };
             VerifyCSharpDiagnostic(test, expected);
-            var fixtest = @"
+            var fixtest = GetValidatedSourceCode(@"
     using System;
     namespace Application {
 
@@ -170,13 +188,13 @@ namespace MindTouchEnumSwitchAnalyzer.Test {
             }
         }
     }
-}";
+}", EnumSwitchAnalyzerAnalyzer.DIAGNOSTIC_ID);
             VerifyCSharpFix(test, fixtest);
         }
 
         [TestMethod]
         public void Diagnostics_and_code_fix_when_switch_is_empty() {
-            var test = @"
+            var test = GetValidatedSourceCode(@"
     using System;
     namespace Application {
 
@@ -190,7 +208,7 @@ namespace MindTouchEnumSwitchAnalyzer.Test {
             }
         }
     }
-}";
+}", EnumSwitchAnalyzerAnalyzer.DIAGNOSTIC_ID);
             var expected = new DiagnosticResult {
                 Id = "EnumSwitchAnalyzer",
                 Message = string.Format("switch on enum 'MyEnum' is missing the following members: 'A, B, C, D, E, F'"),
@@ -201,7 +219,7 @@ namespace MindTouchEnumSwitchAnalyzer.Test {
                         }
             };
             VerifyCSharpDiagnostic(test, expected);
-            var fixtest = @"
+            var fixtest = GetValidatedSourceCode(@"
     using System;
     namespace Application {
 
@@ -227,7 +245,7 @@ namespace MindTouchEnumSwitchAnalyzer.Test {
             }
         }
     }
-}";
+}", EnumSwitchAnalyzerAnalyzer.DIAGNOSTIC_ID);
             VerifyCSharpFix(test, fixtest);
         }
 

@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 
+using System;
 using System.Collections.Immutable;
 using System.Linq;
 using Microsoft.CodeAnalysis;
@@ -36,6 +37,7 @@ namespace MindTouchEnumSwitchAnalyzer {
         private static readonly LocalizableString MessageFormat = new LocalizableResourceString(nameof(Resources.AnalyzerMessageFormat), Resources.ResourceManager, typeof(Resources));
         private static readonly LocalizableString Description = new LocalizableResourceString(nameof(Resources.AnalyzerDescription), Resources.ResourceManager, typeof(Resources));
         private static readonly DiagnosticDescriptor Rule = new DiagnosticDescriptor(DIAGNOSTIC_ID, Title, MessageFormat, Category, DiagnosticSeverity.Error, isEnabledByDefault: true, description: Description);
+        private static readonly DiagnosticDescriptor AnalyzerExceptionRule = new DiagnosticDescriptor(DIAGNOSTIC_ID, $"{DIAGNOSTIC_ID} Exception", $"{DIAGNOSTIC_ID} failed with error: '{0}'", Category, DiagnosticSeverity.Hidden, isEnabledByDefault: true, description: $"{DIAGNOSTIC_ID} Exception");
 
         //--- Class Methods ---
         private static void AnalyzeSwitchStatement(SyntaxNodeAnalysisContext context) {
@@ -49,10 +51,21 @@ namespace MindTouchEnumSwitchAnalyzer {
             }
         }
 
+        private static Action<SyntaxNodeAnalysisContext> TryCatchAsDiagnostic(Action<SyntaxNodeAnalysisContext> action) {
+            return context => {
+                try {
+                    action(context);
+                } catch(Exception analyzerException) {
+                    var diagnostic = Diagnostic.Create(AnalyzerExceptionRule, context.Node.GetLocation(), analyzerException.ToString());
+                    context.ReportDiagnostic(diagnostic);
+                }
+            };
+        }
+
         //--- Properties ---
-        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(Rule);
+        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(Rule, AnalyzerExceptionRule);
 
         //--- Methods ---
-        public override void Initialize(AnalysisContext context) => context.RegisterSyntaxNodeAction(AnalyzeSwitchStatement, SyntaxKind.SwitchStatement);
+        public override void Initialize(AnalysisContext context) => context.RegisterSyntaxNodeAction(TryCatchAsDiagnostic(AnalyzeSwitchStatement), SyntaxKind.SwitchStatement);
     }
 }

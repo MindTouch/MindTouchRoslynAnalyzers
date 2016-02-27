@@ -78,7 +78,7 @@ namespace MindTouchMaterializedEnumerableAnalyzer {
 
         //--- Methods ---
         public sealed override ImmutableArray<string> FixableDiagnosticIds {
-            get { return ImmutableArray.Create(MaterializeCollectionsAnalyzerAnalyzer.DiagnosticId); }
+            get { return ImmutableArray.Create(MaterializeCollectionsAnalyzerAnalyzer.DIAGNOSTIC_ID); }
         }
 
         public sealed override FixAllProvider GetFixAllProvider() {
