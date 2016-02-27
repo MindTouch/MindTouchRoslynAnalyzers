@@ -15,8 +15,11 @@
  * limitations under the License.
  */
 
+using System;
+using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeFixes;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TestHelper;
@@ -25,10 +28,20 @@ namespace MindTouchMaterializedEnumerableAnalyzer.Test {
 
     [TestClass]
     public class UnitTest : CodeFixVerifier {
-        
+
+        //--- Class Methods ---
+        private static string GetValidatedSourceCode(string source, string diagnosticIdToIgnore) {
+            var syntaxTree = CSharpSyntaxTree.ParseText(source, options: new CSharpParseOptions());
+            var firstDiagnostic = syntaxTree.GetDiagnostics().FirstOrDefault(diagnostic => diagnostic.Id != diagnosticIdToIgnore && diagnostic.Severity == DiagnosticSeverity.Error);
+            if(firstDiagnostic != null) {
+                throw new Exception($"C# code failed to compile: '{firstDiagnostic.GetMessage()}'");
+            }
+            return source;
+        }
+
         [TestMethod]
         public void Correct_materialized_code() {
-            var test = @"
+            var test = GetValidatedSourceCode(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -48,13 +61,13 @@ namespace MindTouchMaterializedEnumerableAnalyzer.Test {
                 Add(l1, l2);
             }
         }
-    }";
+    }", MaterializeCollectionsAnalyzerAnalyzer.DIAGNOSTIC_ID);
             VerifyCSharpDiagnostic(test);
         }
 
         [TestMethod]
         public void Calling_builtin_library_functions() {
-            var test = @"
+            var test = GetValidatedSourceCode(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -69,13 +82,13 @@ namespace MindTouchMaterializedEnumerableAnalyzer.Test {
                 var x = string.Join(new [] {','}, l1);
             }
         }
-    }";
+    }", MaterializeCollectionsAnalyzerAnalyzer.DIAGNOSTIC_ID);
             VerifyCSharpDiagnostic(test);
         }
 
         [TestMethod]
         public void Return_with_turnary() {
-            var test = @"
+            var test = GetValidatedSourceCode(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -90,13 +103,13 @@ namespace MindTouchMaterializedEnumerableAnalyzer.Test {
                 return a.Any() ? a.Select(x => x+x).ToArray() : new int[0];
             }
         }
-    }";
+    }", MaterializeCollectionsAnalyzerAnalyzer.DIAGNOSTIC_ID);
             VerifyCSharpDiagnostic(test);
         }
 
         [TestMethod]
         public void Calling_user_defined_extension_functions() {
-            var test = @"
+            var test = GetValidatedSourceCode(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -118,13 +131,13 @@ namespace MindTouchMaterializedEnumerableAnalyzer.Test {
                 return l1.Square();
             }
         }
-    }";
+    }", MaterializeCollectionsAnalyzerAnalyzer.DIAGNOSTIC_ID);
             VerifyCSharpDiagnostic(test);
         }
 
         [TestMethod]
         public void Calling_user_defined_extension_functions_in_parameter() {
-            var test = @"
+            var test = GetValidatedSourceCode(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -149,13 +162,13 @@ namespace MindTouchMaterializedEnumerableAnalyzer.Test {
                 return Add(l1, l1);
             }
         }
-    }";
+    }", MaterializeCollectionsAnalyzerAnalyzer.DIAGNOSTIC_ID);
             VerifyCSharpDiagnostic(test);
         }
 
         [TestMethod]
         public void Assignment_through_out() {
-            var test = @"
+            var test = GetValidatedSourceCode(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -173,17 +186,17 @@ namespace MindTouchMaterializedEnumerableAnalyzer.Test {
                 IEnumerable<int> a;
                 try {
                     SetCollection(out a);
-                }
+                } catch(Exception e) {}
                 return a;
             }
         }
-    }";
+    }", MaterializeCollectionsAnalyzerAnalyzer.DIAGNOSTIC_ID);
             VerifyCSharpDiagnostic(test);
         }
 
         [TestMethod]
         public void Last_assignment_is_detected_to_determine_materialized() {
-            var test = @"
+            var test = GetValidatedSourceCode(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -204,13 +217,13 @@ namespace MindTouchMaterializedEnumerableAnalyzer.Test {
                 Add(l1, l1);
             }
         }
-    }";
+    }", MaterializeCollectionsAnalyzerAnalyzer.DIAGNOSTIC_ID);
               VerifyCSharpDiagnostic(test);
         }
 
         [TestMethod]
         public void Last_assignment_is_used_to_determine_ummaterialized() {
-            var test = @"
+            var test = GetValidatedSourceCode(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -231,7 +244,7 @@ namespace MindTouchMaterializedEnumerableAnalyzer.Test {
                 Add(l1, null);
             }
         }
-    }";
+    }", MaterializeCollectionsAnalyzerAnalyzer.DIAGNOSTIC_ID);
             var expected = new DiagnosticResult {
                 Id = "MaterializeCollectionsAnalyzer",
                 Message = "Collection may or may not be materialized",
@@ -242,7 +255,7 @@ namespace MindTouchMaterializedEnumerableAnalyzer.Test {
                         }
             };
             VerifyCSharpDiagnostic(test, expected);
-            var fixtest = @"
+            var fixtest = GetValidatedSourceCode(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -263,13 +276,13 @@ namespace MindTouchMaterializedEnumerableAnalyzer.Test {
                 Add(l1.ToArray(), null);
             }
         }
-    }";
+    }", MaterializeCollectionsAnalyzerAnalyzer.DIAGNOSTIC_ID);
             VerifyCSharpFix(test, fixtest);
         }
 
         [TestMethod]
         public void Select_statement_is_detected_unmaterialized_collection() {
-            var test = @"
+            var test = GetValidatedSourceCode(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -289,7 +302,7 @@ namespace MindTouchMaterializedEnumerableAnalyzer.Test {
                 Add(l1, l2.Select(x => x+x));
             }
         }
-    }";
+    }", MaterializeCollectionsAnalyzerAnalyzer.DIAGNOSTIC_ID);
             var expected = new DiagnosticResult {
                 Id = "MaterializeCollectionsAnalyzer",
                 Message = "Collection may or may not be materialized",
@@ -300,7 +313,7 @@ namespace MindTouchMaterializedEnumerableAnalyzer.Test {
                         }
             };
             VerifyCSharpDiagnostic(test, expected);
-            var fixtest = @"
+            var fixtest = GetValidatedSourceCode(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -320,13 +333,13 @@ namespace MindTouchMaterializedEnumerableAnalyzer.Test {
                 Add(l1, l2.Select(x => x+x).ToArray());
             }
         }
-    }";
+    }", MaterializeCollectionsAnalyzerAnalyzer.DIAGNOSTIC_ID);
             VerifyCSharpFix(test, fixtest);
         }
 
         [TestMethod]
         public void Select_statement_is_detected_unmaterialized_collection_when_not_directly_in_argument() {
-            var test = @"
+            var test = GetValidatedSourceCode(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -346,7 +359,7 @@ namespace MindTouchMaterializedEnumerableAnalyzer.Test {
                 Add(l1, l2);
             }
         }
-    }";
+    }", MaterializeCollectionsAnalyzerAnalyzer.DIAGNOSTIC_ID);
             var expected = new DiagnosticResult {
                 Id = "MaterializeCollectionsAnalyzer",
                 Message = "Collection may or may not be materialized",
@@ -357,7 +370,7 @@ namespace MindTouchMaterializedEnumerableAnalyzer.Test {
                         }
             };
             VerifyCSharpDiagnostic(test, expected);
-            var fixtest = @"
+            var fixtest = GetValidatedSourceCode(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -377,13 +390,13 @@ namespace MindTouchMaterializedEnumerableAnalyzer.Test {
                 Add(l1, l2.ToArray());
             }
         }
-    }";
+    }", MaterializeCollectionsAnalyzerAnalyzer.DIAGNOSTIC_ID);
             VerifyCSharpFix(test, fixtest);
         }
 
         [TestMethod]
         public void Unmaterialized_collections_in_return_statements_are_flagged() {
-            var test = @"
+            var test = GetValidatedSourceCode(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -398,7 +411,7 @@ namespace MindTouchMaterializedEnumerableAnalyzer.Test {
                 return l1;
             }
         }
-    }";
+    }", MaterializeCollectionsAnalyzerAnalyzer.DIAGNOSTIC_ID);
             var expected = new DiagnosticResult {
                 Id = "MaterializeCollectionsAnalyzer",
                 Message = "Collection may or may not be materialized",
@@ -409,7 +422,7 @@ namespace MindTouchMaterializedEnumerableAnalyzer.Test {
                         }
             };
             VerifyCSharpDiagnostic(test, expected);
-            var fixtest = @"
+            var fixtest = GetValidatedSourceCode(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -424,13 +437,13 @@ namespace MindTouchMaterializedEnumerableAnalyzer.Test {
                 return l1.ToArray();
             }
         }
-    }";
+    }", MaterializeCollectionsAnalyzerAnalyzer.DIAGNOSTIC_ID);
             VerifyCSharpFix(test, fixtest);
         }
 
         [TestMethod]
         public void Values_coming_straight_from_method_call_directly_are_assumed_materialized() {
-            var test = @"
+            var test = GetValidatedSourceCode(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -451,13 +464,13 @@ namespace MindTouchMaterializedEnumerableAnalyzer.Test {
                 var x = Add(GetCollection(), GetCollection());
             }
         }
-    }";
+    }", MaterializeCollectionsAnalyzerAnalyzer.DIAGNOSTIC_ID);
             VerifyCSharpDiagnostic(test);
         }
 
         [TestMethod]
         public void Values_coming_from_instance_method() {
-            var test = @"
+            var test = GetValidatedSourceCode(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -477,13 +490,13 @@ namespace MindTouchMaterializedEnumerableAnalyzer.Test {
                 return _t.Add(new List<int>(), new List<int>());
             }
         }
-    }";
+    }", MaterializeCollectionsAnalyzerAnalyzer.DIAGNOSTIC_ID);
             VerifyCSharpDiagnostic(test);
         }
 
         [TestMethod]
         public void Values_coming_straight_from_method_call_directly_are_assumed_materialized_in_return_statement() {
-            var test = @"
+            var test = GetValidatedSourceCode(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -504,13 +517,13 @@ namespace MindTouchMaterializedEnumerableAnalyzer.Test {
                 return TypeName.Add(GetCollection(), GetCollection());
             }
         }
-    }";
+    }", MaterializeCollectionsAnalyzerAnalyzer.DIAGNOSTIC_ID);
             VerifyCSharpDiagnostic(test);
         }
 
         [TestMethod]
         public void Values_coming_straight_from_method_call_indirectly_are_assumed_materialized() {
-            var test = @"
+            var test = GetValidatedSourceCode(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -533,13 +546,13 @@ namespace MindTouchMaterializedEnumerableAnalyzer.Test {
                 var x = Add(a, b);
             }
         }
-    }";
+    }", MaterializeCollectionsAnalyzerAnalyzer.DIAGNOSTIC_ID);
             VerifyCSharpDiagnostic(test);
         }
 
         [TestMethod]
         public void Values_of_ienumerable_type_with_subsequent_materialization() {
-            var test = @"
+            var test = GetValidatedSourceCode(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -564,13 +577,13 @@ namespace MindTouchMaterializedEnumerableAnalyzer.Test {
                 var x = Add(a, b);
             }
         }
-    }";
+    }", MaterializeCollectionsAnalyzerAnalyzer.DIAGNOSTIC_ID);
             VerifyCSharpDiagnostic(test);
         }
 
         [TestMethod]
         public void Values_coming_straight_from_property_call_directly_are_assumed_materialized_in_return_statement() {
-            var test = @"
+            var test = GetValidatedSourceCode(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -592,13 +605,13 @@ namespace MindTouchMaterializedEnumerableAnalyzer.Test {
                 return Add(t.MyCollectionProperty, t.MyCollectionProperty);
             }
         }
-    }";
+    }", MaterializeCollectionsAnalyzerAnalyzer.DIAGNOSTIC_ID);
             VerifyCSharpDiagnostic(test);
         }
 
         [TestMethod]
         public void Values_coming_straight_from_property_call_indirectly_are_assumed_materialized() {
-            var test = @"
+            var test = GetValidatedSourceCode(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -622,13 +635,13 @@ namespace MindTouchMaterializedEnumerableAnalyzer.Test {
                 var x = Add(a, b);
             }
         }
-    }";
+    }", MaterializeCollectionsAnalyzerAnalyzer.DIAGNOSTIC_ID);
             VerifyCSharpDiagnostic(test);
         }
 
         [TestMethod]
         public void Values_coming_straight_from_method_params_directly_are_assumed_materialized() {
-            var test = @"
+            var test = GetValidatedSourceCode(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -646,13 +659,13 @@ namespace MindTouchMaterializedEnumerableAnalyzer.Test {
                 var x = Add(a, b);
             }
         }
-    }";
+    }", MaterializeCollectionsAnalyzerAnalyzer.DIAGNOSTIC_ID);
             VerifyCSharpDiagnostic(test);
         }
 
         [TestMethod]
         public void Values_coming_straight_from_method_params_indirectly_are_assumed_materialized() {
-            var test = @"
+            var test = GetValidatedSourceCode(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -672,13 +685,13 @@ namespace MindTouchMaterializedEnumerableAnalyzer.Test {
                 var x = Add(i, j);
             }
         }
-    }";
+    }", MaterializeCollectionsAnalyzerAnalyzer.DIAGNOSTIC_ID);
             VerifyCSharpDiagnostic(test);
         }
 
         [TestMethod]
         public void Parameters_that_are_out_variables_are_ignored() {
-            var test = @"
+            var test = GetValidatedSourceCode(@"
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -699,7 +712,7 @@ namespace MindTouchMaterializedEnumerableAnalyzer.Test {
                 var x = Add(i, out j);
             }
         }
-    }";
+    }", MaterializeCollectionsAnalyzerAnalyzer.DIAGNOSTIC_ID);
             VerifyCSharpDiagnostic(test);
         }
 
