@@ -193,6 +193,89 @@ namespace MindTouchEnumSwitchAnalyzer.Test {
         }
 
         [TestMethod]
+        public void Nested_enum_diagnostic() {
+            var test = GetValidatedSourceCode(@"
+    using System;
+    namespace Application {
+        
+        enum MyEnum { A, B, C, D };
+
+        class MyClass {
+            public static void Function() {
+                MyEnum e = 0;
+                MyEnum f = 0;
+                switch(e) 
+                {
+                    case MyEnum.A:
+                    case MyEnum.B:
+                        switch(f) 
+                        {
+                            case MyEnum.C:
+                            case MyEnum.D:
+                            break;
+                        }
+                    break;
+                }
+            }
+        }    
+    }", EnumSwitchAnalyzerAnalyzer.DIAGNOSTIC_ID);
+            var expected = new[] {
+                new DiagnosticResult {
+                    Id = "EnumSwitchAnalyzer",
+                    Message = string.Format("switch on enum 'MyEnum' is missing the following members: 'C, D'"),
+                    Severity = DiagnosticSeverity.Error,
+                    Locations = new[] {
+                        new DiagnosticResultLocation("Test0.cs", 11, 17)
+                    }
+                },
+                new DiagnosticResult {
+                    Id = "EnumSwitchAnalyzer",
+                    Message = string.Format("switch on enum 'MyEnum' is missing the following members: 'A, B'"),
+                    Severity = DiagnosticSeverity.Error,
+                    Locations = new[] {
+                        new DiagnosticResultLocation("Test0.cs", 15, 25)
+                    }
+                }
+            };
+            VerifyCSharpDiagnostic(test, expected);
+
+            var fixtest = GetValidatedSourceCode(@"
+    using System;
+    namespace Application {
+        
+        enum MyEnum { A, B, C, D };
+
+        class MyClass {
+            public static void Function() {
+                MyEnum e = 0;
+                MyEnum f = 0;
+            switch (e)
+            {
+                case MyEnum.A:
+                    case MyEnum.B:
+                    switch (f)
+                    {
+                        case MyEnum.C:
+                            case MyEnum.D:
+                            break;
+                        case MyEnum.A:
+                            throw new NotImplementedException();
+                        case MyEnum.B:
+                            throw new NotImplementedException();
+                    }
+                    break;
+                case MyEnum.C:
+                    throw new NotImplementedException();
+                case MyEnum.D:
+                    throw new NotImplementedException();
+            }
+        }
+        }    
+    }", EnumSwitchAnalyzerAnalyzer.DIAGNOSTIC_ID);
+            VerifyCSharpFix(test, fixtest);
+        }
+
+        [TestMethod]
         public void Diagnostics_and_code_fix_when_switch_is_empty() {
             var test = GetValidatedSourceCode(@"
     using System;
