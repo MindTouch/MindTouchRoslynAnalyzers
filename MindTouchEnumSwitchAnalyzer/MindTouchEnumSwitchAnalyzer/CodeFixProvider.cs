@@ -55,7 +55,7 @@ namespace MindTouchEnumSwitchAnalyzer {
                 var switchVariableTypeInfo = semanticModel.GetTypeInfo(switchVariable);
                 var newCaseStatements = missingMembers.Select(missingMember =>
                     SyntaxFactory.CaseSwitchLabel(
-                        SyntaxFactory.Token(SyntaxKind.CaseKeyword).WithLeadingTrivia(),
+                        SyntaxFactory.Token(SyntaxKind.CaseKeyword),
                         SyntaxFactory.MemberAccessExpression(
                             SyntaxKind.SimpleMemberAccessExpression,
                             SyntaxFactory.IdentifierName(switchVariableTypeInfo.Type.Name),
