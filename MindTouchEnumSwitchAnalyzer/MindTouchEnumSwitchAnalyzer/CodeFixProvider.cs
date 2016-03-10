@@ -16,6 +16,7 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Composition;
 using System.Linq;
@@ -43,11 +44,11 @@ namespace MindTouchEnumSwitchAnalyzer {
             if(missingMembers.Any()) {
 
                 // get existing switchSections
-                var existingSections = node.DescendantNodes().OfType<SwitchSectionSyntax>().ToImmutableArray();
+                var existingSections = node.Sections.ToList();
                 SwitchSectionSyntax defaultSection = null;
                 if(existingSections.Any() && existingSections.Last().DescendantNodes().OfType<DefaultSwitchLabelSyntax>().Any()) {
                     defaultSection = existingSections.Last();
-                    existingSections = existingSections.Take(existingSections.Length - 1).ToImmutableArray();
+                    existingSections = existingSections.Take(existingSections.Count - 1).ToList();
                 }
 
                 // generate missing case statements
@@ -88,7 +89,7 @@ namespace MindTouchEnumSwitchAnalyzer {
                         .AddRange(newCaseStatements)
                         .AddRange(defaultSection == null ? Enumerable.Empty<SwitchSectionSyntax>() : new [] { defaultSection })
                 ).WithLeadingTrivia(node.GetLeadingTrivia())
-                    .WithTrailingTrivia(node.GetTrailingTrivia());
+                 .WithTrailingTrivia(node.GetTrailingTrivia());
                 root = root.ReplaceNode(node, switchStatement);
                 return document.WithSyntaxRoot(root);
             }
@@ -101,18 +102,19 @@ namespace MindTouchEnumSwitchAnalyzer {
 
         public sealed override async Task RegisterCodeFixesAsync(CodeFixContext context) {
             var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);
-            var diagnostic = context.Diagnostics.First();
-            var diagnosticSpan = diagnostic.Location.SourceSpan;
+            foreach(var diagnostic in context.Diagnostics) {
+                var diagnosticSpan = diagnostic.Location.SourceSpan;
 
-            // Find the switch statement identified by the diagnostic.
-            var switchStatment = root.FindToken(diagnosticSpan.Start);
+                // Find the switch statement identified by the diagnostic.
+                var switchStatment = root.FindToken(diagnosticSpan.Start);
 
-            // Register a code action that will invoke the fix.
-            context.RegisterCodeFix(CodeAction.Create(
-                title: Title,
-                createChangedDocument: c => AddMissingEnumFields(context.Document, switchStatment, c),
-                equivalenceKey: Title
-            ), diagnostic);
+                // Register a code action that will invoke the fix.
+                context.RegisterCodeFix(CodeAction.Create(
+                    title: Title,
+                    createChangedDocument: c => AddMissingEnumFields(context.Document, switchStatment, c),
+                    equivalenceKey: Title
+                ), diagnostic);
+            }
         }
     }
 }
