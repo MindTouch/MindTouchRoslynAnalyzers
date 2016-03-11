@@ -13,7 +13,7 @@ Roslyn analyzer that ensures that all enum cases are handled when used inside a 
 MindTouchMaterializedEnumerableAnalyzer
 ---------------------------------------
 
-Analyzer that ensures that any collections passed in as parameters to a function, or returned from a function are materialized. [Read more.](MindTouch.RoslynAnalyzers/MindTouchRoslynAnalyzers/MindTouchMaterializedEnumerableAnalyzer/README.md)
+Analyzer that ensures that any collections passed in as parameters to a function, or returned from a function are materialized. [Read more.](MindTouchRoslynAnalyzers/MindTouch.RoslynAnalyzers/MindTouchMaterializedEnumerableAnalyzer/README.md)
 
 System Requirements
 -------------------
