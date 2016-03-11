@@ -8,8 +8,8 @@
     <ProjectGuid>{E147AE70-4C7D-4B37-B71B-E338F571AC1B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MindTouchRoslynAnalyzers</RootNamespace>
-    <AssemblyName>MindTouchRoslynAnalyzers</AssemblyName>
+    <RootNamespace>MindTouch.RoslynAnalyzers</RootNamespace>
+    <AssemblyName>MindTouch.RoslynAnalyzers</AssemblyName>
     <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <TargetFrameworkProfile>Profile7</TargetFrameworkProfile>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>

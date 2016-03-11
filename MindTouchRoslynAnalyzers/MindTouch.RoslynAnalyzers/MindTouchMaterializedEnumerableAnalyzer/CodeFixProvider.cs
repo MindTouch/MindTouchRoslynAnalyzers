@@ -26,7 +26,7 @@ using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace MindTouchRoslynAnalyzers.MindTouchMaterializedEnumerableAnalyzer {
+namespace MindTouch.RoslynAnalyzers.MindTouchMaterializedEnumerableAnalyzer {
 
     [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(MindTouchMaterializeCollectionsAnalyzerCodeFixProvider)), Shared]
     public class MindTouchMaterializeCollectionsAnalyzerCodeFixProvider : CodeFixProvider {

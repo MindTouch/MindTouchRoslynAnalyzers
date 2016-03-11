@@ -10,11 +10,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MindTouchRoslynAnalyzers", "MindTouchRoslynAnalyzers\MindTouchRoslynAnalyzers\MindTouchRoslynAnalyzers.csproj", "{E147AE70-4C7D-4B37-B71B-E338F571AC1B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MindTouch.RoslynAnalyzers", "MindTouchRoslynAnalyzers\MindTouch.RoslynAnalyzers\MindTouch.RoslynAnalyzers.csproj", "{E147AE70-4C7D-4B37-B71B-E338F571AC1B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MindTouchRoslynAnalyzers.Test", "MindTouchRoslynAnalyzers\MindTouchRoslynAnalyzers.Test\MindTouchRoslynAnalyzers.Test.csproj", "{A3453845-6264-4CFA-A844-7566946B97B2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MindTouch.RoslynAnalyzers.Test", "MindTouchRoslynAnalyzers\MindTouch.RoslynAnalyzers.Test\MindTouch.RoslynAnalyzers.Test.csproj", "{A3453845-6264-4CFA-A844-7566946B97B2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MindTouchRoslynAnalyzers.Vsix", "MindTouchRoslynAnalyzers\MindTouchRoslynAnalyzers.Vsix\MindTouchRoslynAnalyzers.Vsix.csproj", "{777EE898-44D2-4510-9EBD-F6640B3FCBBF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MindTouch.RoslynAnalyzers.Vsix", "MindTouchRoslynAnalyzers\MindTouch.RoslynAnalyzers.Vsix\MindTouch.RoslynAnalyzers.Vsix.csproj", "{777EE898-44D2-4510-9EBD-F6640B3FCBBF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

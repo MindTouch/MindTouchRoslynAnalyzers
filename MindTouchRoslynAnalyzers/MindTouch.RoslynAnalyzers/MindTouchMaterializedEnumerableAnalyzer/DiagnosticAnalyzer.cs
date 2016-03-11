@@ -22,7 +22,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
 
-namespace MindTouchRoslynAnalyzers.MindTouchMaterializedEnumerableAnalyzer {
+namespace MindTouch.RoslynAnalyzers.MindTouchMaterializedEnumerableAnalyzer {
 
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public class MindTouchMaterializedEnumerableAnalyzer : DiagnosticAnalyzer {

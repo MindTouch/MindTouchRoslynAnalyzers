@@ -27,7 +27,7 @@ using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace MindTouchRoslynAnalyzers.MindTouchEnumSwitchAnalyzer {
+namespace MindTouch.RoslynAnalyzers.MindTouchEnumSwitchAnalyzer {
 
     [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(MindTouchEnumSwitchAnalyzerCodeFixProvider)), Shared]
     public class MindTouchEnumSwitchAnalyzerCodeFixProvider : CodeFixProvider {
@@ -97,7 +97,7 @@ namespace MindTouchRoslynAnalyzers.MindTouchEnumSwitchAnalyzer {
         }
 
         //--- Methods ---
-        public sealed override ImmutableArray<string> FixableDiagnosticIds => ImmutableArray.Create(MindTouchEnumSwitchAnalyzer.DIAGNOSTIC_ID);
+        public sealed override ImmutableArray<string> FixableDiagnosticIds => ImmutableArray.Create(MindTouch.RoslynAnalyzers.MindTouchEnumSwitchAnalyzer.MindTouchEnumSwitchAnalyzer.DIAGNOSTIC_ID);
         public sealed override FixAllProvider GetFixAllProvider() => WellKnownFixAllProviders.BatchFixer;
 
         public sealed override async Task RegisterCodeFixesAsync(CodeFixContext context) {

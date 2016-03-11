@@ -22,10 +22,10 @@ using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using MindTouchRoslynAnalyzers.MindTouchEnumSwitchAnalyzer;
+using MindTouch.RoslynAnalyzers.MindTouchEnumSwitchAnalyzer;
 using TestHelper;
 
-namespace MindTouchRoslynAnalyzers.Test {
+namespace MindTouch.RoslynAnalyzers.Test {
 
     [TestClass]
     public class MindTouchEnumSwitchAnalyzerTests : CodeFixVerifier {
@@ -63,7 +63,7 @@ namespace MindTouchRoslynAnalyzers.Test {
                 }
             }
         }    
-    }", MindTouchEnumSwitchAnalyzer.MindTouchEnumSwitchAnalyzer.DIAGNOSTIC_ID);
+    }", MindTouch.RoslynAnalyzers.MindTouchEnumSwitchAnalyzer.MindTouchEnumSwitchAnalyzer.DIAGNOSTIC_ID);
             VerifyCSharpDiagnostic(test);
         }
 
@@ -91,9 +91,9 @@ namespace MindTouchRoslynAnalyzers.Test {
             }
         }
     }
-}", MindTouchEnumSwitchAnalyzer.MindTouchEnumSwitchAnalyzer.DIAGNOSTIC_ID);
+}", MindTouch.RoslynAnalyzers.MindTouchEnumSwitchAnalyzer.MindTouchEnumSwitchAnalyzer.DIAGNOSTIC_ID);
             var expected = new DiagnosticResult {
-                Id = MindTouchEnumSwitchAnalyzer.MindTouchEnumSwitchAnalyzer.DIAGNOSTIC_ID,
+                Id = MindTouch.RoslynAnalyzers.MindTouchEnumSwitchAnalyzer.MindTouchEnumSwitchAnalyzer.DIAGNOSTIC_ID,
                 Message = "switch on enum \'MyEnum\' is missing the following members: \'F\'",
                 Severity = DiagnosticSeverity.Error,
                 Locations =
@@ -126,7 +126,7 @@ namespace MindTouchRoslynAnalyzers.Test {
             }
         }
     }
-}", MindTouchEnumSwitchAnalyzer.MindTouchEnumSwitchAnalyzer.DIAGNOSTIC_ID);
+}", MindTouch.RoslynAnalyzers.MindTouchEnumSwitchAnalyzer.MindTouchEnumSwitchAnalyzer.DIAGNOSTIC_ID);
             VerifyCSharpFix(test, fixtest);
         }
 
@@ -154,9 +154,9 @@ namespace MindTouchRoslynAnalyzers.Test {
             }
         }
     }
-}", MindTouchEnumSwitchAnalyzer.MindTouchEnumSwitchAnalyzer.DIAGNOSTIC_ID);
+}", MindTouch.RoslynAnalyzers.MindTouchEnumSwitchAnalyzer.MindTouchEnumSwitchAnalyzer.DIAGNOSTIC_ID);
             var expected = new DiagnosticResult {
-                Id = MindTouchEnumSwitchAnalyzer.MindTouchEnumSwitchAnalyzer.DIAGNOSTIC_ID,
+                Id = MindTouch.RoslynAnalyzers.MindTouchEnumSwitchAnalyzer.MindTouchEnumSwitchAnalyzer.DIAGNOSTIC_ID,
                 Message = "switch on enum \'MyEnum\' is missing the following members: \'F\'",
                 Severity = DiagnosticSeverity.Error,
                 Locations =
@@ -189,7 +189,7 @@ namespace MindTouchRoslynAnalyzers.Test {
             }
         }
     }
-}", MindTouchEnumSwitchAnalyzer.MindTouchEnumSwitchAnalyzer.DIAGNOSTIC_ID);
+}", MindTouch.RoslynAnalyzers.MindTouchEnumSwitchAnalyzer.MindTouchEnumSwitchAnalyzer.DIAGNOSTIC_ID);
             VerifyCSharpFix(test, fixtest);
         }
 
@@ -219,10 +219,10 @@ namespace MindTouchRoslynAnalyzers.Test {
                 }
             }
         }    
-    }", MindTouchEnumSwitchAnalyzer.MindTouchEnumSwitchAnalyzer.DIAGNOSTIC_ID);
+    }", MindTouch.RoslynAnalyzers.MindTouchEnumSwitchAnalyzer.MindTouchEnumSwitchAnalyzer.DIAGNOSTIC_ID);
             var expected = new[] {
                 new DiagnosticResult {
-                    Id = MindTouchEnumSwitchAnalyzer.MindTouchEnumSwitchAnalyzer.DIAGNOSTIC_ID,
+                    Id = MindTouch.RoslynAnalyzers.MindTouchEnumSwitchAnalyzer.MindTouchEnumSwitchAnalyzer.DIAGNOSTIC_ID,
                     Message = "switch on enum \'MyEnum\' is missing the following members: \'C, D\'",
                     Severity = DiagnosticSeverity.Error,
                     Locations = new[] {
@@ -230,7 +230,7 @@ namespace MindTouchRoslynAnalyzers.Test {
                     }
                 },
                 new DiagnosticResult {
-                    Id = MindTouchEnumSwitchAnalyzer.MindTouchEnumSwitchAnalyzer.DIAGNOSTIC_ID,
+                    Id = MindTouch.RoslynAnalyzers.MindTouchEnumSwitchAnalyzer.MindTouchEnumSwitchAnalyzer.DIAGNOSTIC_ID,
                     Message = "switch on enum \'MyEnum\' is missing the following members: \'A, B\'",
                     Severity = DiagnosticSeverity.Error,
                     Locations = new[] {
@@ -272,7 +272,7 @@ namespace MindTouchRoslynAnalyzers.Test {
             }
         }
         }    
-    }", MindTouchEnumSwitchAnalyzer.MindTouchEnumSwitchAnalyzer.DIAGNOSTIC_ID);
+    }", MindTouch.RoslynAnalyzers.MindTouchEnumSwitchAnalyzer.MindTouchEnumSwitchAnalyzer.DIAGNOSTIC_ID);
             VerifyCSharpFix(test, fixtest);
         }
 
@@ -306,10 +306,10 @@ namespace MindTouchRoslynAnalyzers.Test {
                 }
             }
         }    
-    }", MindTouchEnumSwitchAnalyzer.MindTouchEnumSwitchAnalyzer.DIAGNOSTIC_ID);
+    }", MindTouch.RoslynAnalyzers.MindTouchEnumSwitchAnalyzer.MindTouchEnumSwitchAnalyzer.DIAGNOSTIC_ID);
             var expected = new[] {
                 new DiagnosticResult {
-                    Id = MindTouchEnumSwitchAnalyzer.MindTouchEnumSwitchAnalyzer.DIAGNOSTIC_ID,
+                    Id = MindTouch.RoslynAnalyzers.MindTouchEnumSwitchAnalyzer.MindTouchEnumSwitchAnalyzer.DIAGNOSTIC_ID,
                     Message = "switch on enum \'MyEnum\' is missing the following members: \'C, D\'",
                     Severity = DiagnosticSeverity.Error,
                     Locations = new[] {
@@ -317,7 +317,7 @@ namespace MindTouchRoslynAnalyzers.Test {
                     }
                 },
                 new DiagnosticResult {
-                    Id = MindTouchEnumSwitchAnalyzer.MindTouchEnumSwitchAnalyzer.DIAGNOSTIC_ID,
+                    Id = MindTouch.RoslynAnalyzers.MindTouchEnumSwitchAnalyzer.MindTouchEnumSwitchAnalyzer.DIAGNOSTIC_ID,
                     Message = "switch on enum \'MyEnum\' is missing the following members: \'A, B\'",
                     Severity = DiagnosticSeverity.Error,
                     Locations = new[] {
@@ -363,7 +363,7 @@ namespace MindTouchRoslynAnalyzers.Test {
             }
         }
         }    
-    }", MindTouchEnumSwitchAnalyzer.MindTouchEnumSwitchAnalyzer.DIAGNOSTIC_ID);
+    }", MindTouch.RoslynAnalyzers.MindTouchEnumSwitchAnalyzer.MindTouchEnumSwitchAnalyzer.DIAGNOSTIC_ID);
             VerifyCSharpFix(test, fixtest);
         }
 
@@ -384,9 +384,9 @@ namespace MindTouchRoslynAnalyzers.Test {
             }
         }
     }
-}", MindTouchEnumSwitchAnalyzer.MindTouchEnumSwitchAnalyzer.DIAGNOSTIC_ID);
+}", MindTouch.RoslynAnalyzers.MindTouchEnumSwitchAnalyzer.MindTouchEnumSwitchAnalyzer.DIAGNOSTIC_ID);
             var expected = new DiagnosticResult {
-                Id = MindTouchEnumSwitchAnalyzer.MindTouchEnumSwitchAnalyzer.DIAGNOSTIC_ID,
+                Id = MindTouch.RoslynAnalyzers.MindTouchEnumSwitchAnalyzer.MindTouchEnumSwitchAnalyzer.DIAGNOSTIC_ID,
                 Message = "switch on enum \'MyEnum\' is missing the following members: \'A, B, C, D, E, F\'",
                 Severity = DiagnosticSeverity.Error,
                 Locations =
@@ -421,7 +421,7 @@ namespace MindTouchRoslynAnalyzers.Test {
             }
         }
     }
-}", MindTouchEnumSwitchAnalyzer.MindTouchEnumSwitchAnalyzer.DIAGNOSTIC_ID);
+}", MindTouch.RoslynAnalyzers.MindTouchEnumSwitchAnalyzer.MindTouchEnumSwitchAnalyzer.DIAGNOSTIC_ID);
             VerifyCSharpFix(test, fixtest);
         }
 
@@ -430,7 +430,7 @@ namespace MindTouchRoslynAnalyzers.Test {
         }
 
         protected override DiagnosticAnalyzer GetCSharpDiagnosticAnalyzer() {
-            return new MindTouchEnumSwitchAnalyzer.MindTouchEnumSwitchAnalyzer();
+            return new MindTouch.RoslynAnalyzers.MindTouchEnumSwitchAnalyzer.MindTouchEnumSwitchAnalyzer();
         }
     }
 }

@@ -21,7 +21,7 @@ using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace MindTouchRoslynAnalyzers.MindTouchEnumSwitchAnalyzer {
+namespace MindTouch.RoslynAnalyzers.MindTouchEnumSwitchAnalyzer {
     internal class EnumSwitchAnalysis {
 
         //--- Class Methods ---
