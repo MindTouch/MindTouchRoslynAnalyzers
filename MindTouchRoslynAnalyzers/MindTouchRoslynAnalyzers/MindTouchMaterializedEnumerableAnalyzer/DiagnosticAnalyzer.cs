@@ -22,19 +22,19 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
 
-namespace MindTouchMaterializedEnumerableAnalyzer {
+namespace MindTouchRoslynAnalyzers.MindTouchMaterializedEnumerableAnalyzer {
 
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    public class MaterializeCollectionsAnalyzerAnalyzer : DiagnosticAnalyzer {
+    public class MindTouchMaterializedEnumerableAnalyzer : DiagnosticAnalyzer {
 
         //--- Constants ---
-        public const string DIAGNOSTIC_ID = "MaterializeCollectionsAnalyzer";
+        public const string DIAGNOSTIC_ID = "MindTouchMaterializedEnumerableAnalyzer";
         private const string Category = "Performance";
 
         //--- Class Fields ---
-        private static readonly LocalizableString Title = new LocalizableResourceString(nameof(Resources.AnalyzerTitle), Resources.ResourceManager, typeof(Resources));
-        private static readonly LocalizableString MessageFormat = new LocalizableResourceString(nameof(Resources.AnalyzerMessageFormat), Resources.ResourceManager, typeof(Resources));
-        private static readonly LocalizableString Description = new LocalizableResourceString(nameof(Resources.AnalyzerDescription), Resources.ResourceManager, typeof(Resources));
+        private static readonly LocalizableString Title = new LocalizableResourceString(nameof(Resources.MindTouchMaterializedEnumerableAnalyzerTitle), Resources.ResourceManager, typeof(Resources));
+        private static readonly LocalizableString MessageFormat = new LocalizableResourceString(nameof(Resources.MindTouchMaterializedEnumerableAnalyzerMessageFormat), Resources.ResourceManager, typeof(Resources));
+        private static readonly LocalizableString Description = new LocalizableResourceString(nameof(Resources.MindTouchEnumSwitchAnalyzerDescription), Resources.ResourceManager, typeof(Resources));
         private static readonly DiagnosticDescriptor Rule = new DiagnosticDescriptor(DIAGNOSTIC_ID, Title, MessageFormat, Category, DiagnosticSeverity.Warning, isEnabledByDefault: true, description: Description);
         private static readonly DiagnosticDescriptor AnalyzerExceptionRule = new DiagnosticDescriptor(DIAGNOSTIC_ID, $"{DIAGNOSTIC_ID} Exception", $"{DIAGNOSTIC_ID} failed with error: '{0}'", Category, DiagnosticSeverity.Hidden, isEnabledByDefault: true, description: $"{DIAGNOSTIC_ID} Exception");
 

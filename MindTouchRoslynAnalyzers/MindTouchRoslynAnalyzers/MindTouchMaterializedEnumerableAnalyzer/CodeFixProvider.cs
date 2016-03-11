@@ -26,10 +26,10 @@ using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace MindTouchMaterializedEnumerableAnalyzer {
+namespace MindTouchRoslynAnalyzers.MindTouchMaterializedEnumerableAnalyzer {
 
-    [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(MaterializeCollectionsAnalyzerCodeFixProvider)), Shared]
-    public class MaterializeCollectionsAnalyzerCodeFixProvider : CodeFixProvider {
+    [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(MindTouchMaterializeCollectionsAnalyzerCodeFixProvider)), Shared]
+    public class MindTouchMaterializeCollectionsAnalyzerCodeFixProvider : CodeFixProvider {
 
         //--- Constants ---
         private const string title = "Materialize using ToArray()";
@@ -78,7 +78,7 @@ namespace MindTouchMaterializedEnumerableAnalyzer {
 
         //--- Methods ---
         public sealed override ImmutableArray<string> FixableDiagnosticIds {
-            get { return ImmutableArray.Create(MaterializeCollectionsAnalyzerAnalyzer.DIAGNOSTIC_ID); }
+            get { return ImmutableArray.Create(MindTouchMaterializedEnumerableAnalyzer.DIAGNOSTIC_ID); }
         }
 
         public sealed override FixAllProvider GetFixAllProvider() {

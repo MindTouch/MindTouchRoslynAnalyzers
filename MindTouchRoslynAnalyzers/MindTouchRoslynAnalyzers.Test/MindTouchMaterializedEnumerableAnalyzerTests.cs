@@ -22,12 +22,13 @@ using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using MindTouchRoslynAnalyzers.MindTouchMaterializedEnumerableAnalyzer;
 using TestHelper;
 
-namespace MindTouchMaterializedEnumerableAnalyzer.Test {
+namespace MindTouchRoslynAnalyzers.Test {
 
     [TestClass]
-    public class UnitTest : CodeFixVerifier {
+    public class MindTouchMaterializedEnumerableAnalyzerTests : CodeFixVerifier {
 
         //--- Class Methods ---
         private static string GetValidatedSourceCode(string source, string diagnosticIdToIgnore) {
@@ -61,7 +62,7 @@ namespace MindTouchMaterializedEnumerableAnalyzer.Test {
                 Add(l1, l2);
             }
         }
-    }", MaterializeCollectionsAnalyzerAnalyzer.DIAGNOSTIC_ID);
+    }", MindTouchMaterializedEnumerableAnalyzer.MindTouchMaterializedEnumerableAnalyzer.DIAGNOSTIC_ID);
             VerifyCSharpDiagnostic(test);
         }
 
@@ -82,7 +83,7 @@ namespace MindTouchMaterializedEnumerableAnalyzer.Test {
                 var x = string.Join(new [] {','}, l1);
             }
         }
-    }", MaterializeCollectionsAnalyzerAnalyzer.DIAGNOSTIC_ID);
+    }", MindTouchMaterializedEnumerableAnalyzer.MindTouchMaterializedEnumerableAnalyzer.DIAGNOSTIC_ID);
             VerifyCSharpDiagnostic(test);
         }
 
@@ -103,7 +104,7 @@ namespace MindTouchMaterializedEnumerableAnalyzer.Test {
                 return a.Any() ? a.Select(x => x+x).ToArray() : new int[0];
             }
         }
-    }", MaterializeCollectionsAnalyzerAnalyzer.DIAGNOSTIC_ID);
+    }", MindTouchMaterializedEnumerableAnalyzer.MindTouchMaterializedEnumerableAnalyzer.DIAGNOSTIC_ID);
             VerifyCSharpDiagnostic(test);
         }
 
@@ -131,7 +132,7 @@ namespace MindTouchMaterializedEnumerableAnalyzer.Test {
                 return l1.Square();
             }
         }
-    }", MaterializeCollectionsAnalyzerAnalyzer.DIAGNOSTIC_ID);
+    }", MindTouchMaterializedEnumerableAnalyzer.MindTouchMaterializedEnumerableAnalyzer.DIAGNOSTIC_ID);
             VerifyCSharpDiagnostic(test);
         }
 
@@ -162,7 +163,7 @@ namespace MindTouchMaterializedEnumerableAnalyzer.Test {
                 return Add(l1, l1);
             }
         }
-    }", MaterializeCollectionsAnalyzerAnalyzer.DIAGNOSTIC_ID);
+    }", MindTouchMaterializedEnumerableAnalyzer.MindTouchMaterializedEnumerableAnalyzer.DIAGNOSTIC_ID);
             VerifyCSharpDiagnostic(test);
         }
 
@@ -190,7 +191,7 @@ namespace MindTouchMaterializedEnumerableAnalyzer.Test {
                 return a;
             }
         }
-    }", MaterializeCollectionsAnalyzerAnalyzer.DIAGNOSTIC_ID);
+    }", MindTouchMaterializedEnumerableAnalyzer.MindTouchMaterializedEnumerableAnalyzer.DIAGNOSTIC_ID);
             VerifyCSharpDiagnostic(test);
         }
 
@@ -217,7 +218,7 @@ namespace MindTouchMaterializedEnumerableAnalyzer.Test {
                 Add(l1, l1);
             }
         }
-    }", MaterializeCollectionsAnalyzerAnalyzer.DIAGNOSTIC_ID);
+    }", MindTouchMaterializedEnumerableAnalyzer.MindTouchMaterializedEnumerableAnalyzer.DIAGNOSTIC_ID);
               VerifyCSharpDiagnostic(test);
         }
 
@@ -244,9 +245,9 @@ namespace MindTouchMaterializedEnumerableAnalyzer.Test {
                 Add(l1, null);
             }
         }
-    }", MaterializeCollectionsAnalyzerAnalyzer.DIAGNOSTIC_ID);
+    }", MindTouchMaterializedEnumerableAnalyzer.MindTouchMaterializedEnumerableAnalyzer.DIAGNOSTIC_ID);
             var expected = new DiagnosticResult {
-                Id = "MaterializeCollectionsAnalyzer",
+                Id = MindTouchMaterializedEnumerableAnalyzer.MindTouchMaterializedEnumerableAnalyzer.DIAGNOSTIC_ID,
                 Message = "Collection may or may not be materialized",
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
@@ -276,7 +277,7 @@ namespace MindTouchMaterializedEnumerableAnalyzer.Test {
                 Add(l1.ToArray(), null);
             }
         }
-    }", MaterializeCollectionsAnalyzerAnalyzer.DIAGNOSTIC_ID);
+    }", MindTouchMaterializedEnumerableAnalyzer.MindTouchMaterializedEnumerableAnalyzer.DIAGNOSTIC_ID);
             VerifyCSharpFix(test, fixtest);
         }
 
@@ -302,9 +303,9 @@ namespace MindTouchMaterializedEnumerableAnalyzer.Test {
                 Add(l1, l2.Select(x => x+x));
             }
         }
-    }", MaterializeCollectionsAnalyzerAnalyzer.DIAGNOSTIC_ID);
+    }", MindTouchMaterializedEnumerableAnalyzer.MindTouchMaterializedEnumerableAnalyzer.DIAGNOSTIC_ID);
             var expected = new DiagnosticResult {
-                Id = "MaterializeCollectionsAnalyzer",
+                Id = MindTouchMaterializedEnumerableAnalyzer.MindTouchMaterializedEnumerableAnalyzer.DIAGNOSTIC_ID,
                 Message = "Collection may or may not be materialized",
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
@@ -333,7 +334,7 @@ namespace MindTouchMaterializedEnumerableAnalyzer.Test {
                 Add(l1, l2.Select(x => x+x).ToArray());
             }
         }
-    }", MaterializeCollectionsAnalyzerAnalyzer.DIAGNOSTIC_ID);
+    }", MindTouchMaterializedEnumerableAnalyzer.MindTouchMaterializedEnumerableAnalyzer.DIAGNOSTIC_ID);
             VerifyCSharpFix(test, fixtest);
         }
 
@@ -359,9 +360,9 @@ namespace MindTouchMaterializedEnumerableAnalyzer.Test {
                 Add(l1, l2);
             }
         }
-    }", MaterializeCollectionsAnalyzerAnalyzer.DIAGNOSTIC_ID);
+    }", MindTouchMaterializedEnumerableAnalyzer.MindTouchMaterializedEnumerableAnalyzer.DIAGNOSTIC_ID);
             var expected = new DiagnosticResult {
-                Id = "MaterializeCollectionsAnalyzer",
+                Id = MindTouchMaterializedEnumerableAnalyzer.MindTouchMaterializedEnumerableAnalyzer.DIAGNOSTIC_ID,
                 Message = "Collection may or may not be materialized",
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
@@ -390,7 +391,7 @@ namespace MindTouchMaterializedEnumerableAnalyzer.Test {
                 Add(l1, l2.ToArray());
             }
         }
-    }", MaterializeCollectionsAnalyzerAnalyzer.DIAGNOSTIC_ID);
+    }", MindTouchMaterializedEnumerableAnalyzer.MindTouchMaterializedEnumerableAnalyzer.DIAGNOSTIC_ID);
             VerifyCSharpFix(test, fixtest);
         }
 
@@ -411,9 +412,9 @@ namespace MindTouchMaterializedEnumerableAnalyzer.Test {
                 return l1;
             }
         }
-    }", MaterializeCollectionsAnalyzerAnalyzer.DIAGNOSTIC_ID);
+    }", MindTouchMaterializedEnumerableAnalyzer.MindTouchMaterializedEnumerableAnalyzer.DIAGNOSTIC_ID);
             var expected = new DiagnosticResult {
-                Id = "MaterializeCollectionsAnalyzer",
+                Id = MindTouchMaterializedEnumerableAnalyzer.MindTouchMaterializedEnumerableAnalyzer.DIAGNOSTIC_ID,
                 Message = "Collection may or may not be materialized",
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
@@ -437,7 +438,7 @@ namespace MindTouchMaterializedEnumerableAnalyzer.Test {
                 return l1.ToArray();
             }
         }
-    }", MaterializeCollectionsAnalyzerAnalyzer.DIAGNOSTIC_ID);
+    }", MindTouchMaterializedEnumerableAnalyzer.MindTouchMaterializedEnumerableAnalyzer.DIAGNOSTIC_ID);
             VerifyCSharpFix(test, fixtest);
         }
 
@@ -464,7 +465,7 @@ namespace MindTouchMaterializedEnumerableAnalyzer.Test {
                 var x = Add(GetCollection(), GetCollection());
             }
         }
-    }", MaterializeCollectionsAnalyzerAnalyzer.DIAGNOSTIC_ID);
+    }", MindTouchMaterializedEnumerableAnalyzer.MindTouchMaterializedEnumerableAnalyzer.DIAGNOSTIC_ID);
             VerifyCSharpDiagnostic(test);
         }
 
@@ -490,7 +491,7 @@ namespace MindTouchMaterializedEnumerableAnalyzer.Test {
                 return _t.Add(new List<int>(), new List<int>());
             }
         }
-    }", MaterializeCollectionsAnalyzerAnalyzer.DIAGNOSTIC_ID);
+    }", MindTouchMaterializedEnumerableAnalyzer.MindTouchMaterializedEnumerableAnalyzer.DIAGNOSTIC_ID);
             VerifyCSharpDiagnostic(test);
         }
 
@@ -517,7 +518,7 @@ namespace MindTouchMaterializedEnumerableAnalyzer.Test {
                 return TypeName.Add(GetCollection(), GetCollection());
             }
         }
-    }", MaterializeCollectionsAnalyzerAnalyzer.DIAGNOSTIC_ID);
+    }", MindTouchMaterializedEnumerableAnalyzer.MindTouchMaterializedEnumerableAnalyzer.DIAGNOSTIC_ID);
             VerifyCSharpDiagnostic(test);
         }
 
@@ -546,7 +547,7 @@ namespace MindTouchMaterializedEnumerableAnalyzer.Test {
                 var x = Add(a, b);
             }
         }
-    }", MaterializeCollectionsAnalyzerAnalyzer.DIAGNOSTIC_ID);
+    }", MindTouchMaterializedEnumerableAnalyzer.MindTouchMaterializedEnumerableAnalyzer.DIAGNOSTIC_ID);
             VerifyCSharpDiagnostic(test);
         }
 
@@ -577,7 +578,7 @@ namespace MindTouchMaterializedEnumerableAnalyzer.Test {
                 var x = Add(a, b);
             }
         }
-    }", MaterializeCollectionsAnalyzerAnalyzer.DIAGNOSTIC_ID);
+    }", MindTouchMaterializedEnumerableAnalyzer.MindTouchMaterializedEnumerableAnalyzer.DIAGNOSTIC_ID);
             VerifyCSharpDiagnostic(test);
         }
 
@@ -605,7 +606,7 @@ namespace MindTouchMaterializedEnumerableAnalyzer.Test {
                 return Add(t.MyCollectionProperty, t.MyCollectionProperty);
             }
         }
-    }", MaterializeCollectionsAnalyzerAnalyzer.DIAGNOSTIC_ID);
+    }", MindTouchMaterializedEnumerableAnalyzer.MindTouchMaterializedEnumerableAnalyzer.DIAGNOSTIC_ID);
             VerifyCSharpDiagnostic(test);
         }
 
@@ -635,7 +636,7 @@ namespace MindTouchMaterializedEnumerableAnalyzer.Test {
                 var x = Add(a, b);
             }
         }
-    }", MaterializeCollectionsAnalyzerAnalyzer.DIAGNOSTIC_ID);
+    }", MindTouchMaterializedEnumerableAnalyzer.MindTouchMaterializedEnumerableAnalyzer.DIAGNOSTIC_ID);
             VerifyCSharpDiagnostic(test);
         }
 
@@ -659,7 +660,7 @@ namespace MindTouchMaterializedEnumerableAnalyzer.Test {
                 var x = Add(a, b);
             }
         }
-    }", MaterializeCollectionsAnalyzerAnalyzer.DIAGNOSTIC_ID);
+    }", MindTouchMaterializedEnumerableAnalyzer.MindTouchMaterializedEnumerableAnalyzer.DIAGNOSTIC_ID);
             VerifyCSharpDiagnostic(test);
         }
 
@@ -685,7 +686,7 @@ namespace MindTouchMaterializedEnumerableAnalyzer.Test {
                 var x = Add(i, j);
             }
         }
-    }", MaterializeCollectionsAnalyzerAnalyzer.DIAGNOSTIC_ID);
+    }", MindTouchMaterializedEnumerableAnalyzer.MindTouchMaterializedEnumerableAnalyzer.DIAGNOSTIC_ID);
             VerifyCSharpDiagnostic(test);
         }
 
@@ -712,16 +713,16 @@ namespace MindTouchMaterializedEnumerableAnalyzer.Test {
                 var x = Add(i, out j);
             }
         }
-    }", MaterializeCollectionsAnalyzerAnalyzer.DIAGNOSTIC_ID);
+    }", MindTouchMaterializedEnumerableAnalyzer.MindTouchMaterializedEnumerableAnalyzer.DIAGNOSTIC_ID);
             VerifyCSharpDiagnostic(test);
         }
 
         protected override CodeFixProvider GetCSharpCodeFixProvider() {
-            return new MaterializeCollectionsAnalyzerCodeFixProvider();
+            return new MindTouchMaterializeCollectionsAnalyzerCodeFixProvider();
         }
 
         protected override DiagnosticAnalyzer GetCSharpDiagnosticAnalyzer() {
-            return new MaterializeCollectionsAnalyzerAnalyzer();
+            return new MindTouchMaterializedEnumerableAnalyzer.MindTouchMaterializedEnumerableAnalyzer();
         }
     }
 }

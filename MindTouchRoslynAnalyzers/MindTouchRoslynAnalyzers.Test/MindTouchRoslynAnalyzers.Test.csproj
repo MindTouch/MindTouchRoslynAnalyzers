@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{8B713886-9740-453A-B438-7EC8F68889DA}</ProjectGuid>
+    <ProjectGuid>{A3453845-6264-4CFA-A844-7566946B97B2}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MindTouchMaterializedEnumerableAnalyzer.Test</RootNamespace>
-    <AssemblyName>MindTouchMaterializedEnumerableAnalyzer.Test</AssemblyName>
+    <RootNamespace>MindTouchRoslynAnalyzers.Test</RootNamespace>
+    <AssemblyName>MindTouchRoslynAnalyzers.Test</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -102,25 +102,26 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MindTouchEnumSwitchAnalyzerTests.cs" />
+    <Compile Include="MindTouchMaterializedEnumerableAnalyzerTests.cs" />
     <Compile Include="Verifiers\CodeFixVerifier.cs" />
     <Compile Include="Verifiers\DiagnosticVerifier.cs" />
     <Compile Include="Helpers\CodeFixVerifier.Helper.cs" />
     <Compile Include="Helpers\DiagnosticResult.cs" />
     <Compile Include="Helpers\DiagnosticVerifier.Helper.cs" />
-    <Compile Include="UnitTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
+    <ProjectReference Include="..\MindTouchRoslynAnalyzers\MindTouchRoslynAnalyzers.csproj">
+      <Project>{E147AE70-4C7D-4B37-B71B-E338F571AC1B}</Project>
+      <Name>MindTouchRoslynAnalyzers</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MindTouchMaterializedEnumerableAnalyzer\MindTouchMaterializedEnumerableAnalyzer.csproj">
-      <Project>{cefdd049-e7de-4503-ac24-2615eb6b1148}</Project>
-      <Name>MindTouchMaterializedEnumerableAnalyzer</Name>
-    </ProjectReference>
+    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

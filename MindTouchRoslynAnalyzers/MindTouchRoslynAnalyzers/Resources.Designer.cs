@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace MindTouchMaterializedEnumerableAnalyzer {
+namespace MindTouchRoslynAnalyzers {
     using System;
     using System.Reflection;
     
@@ -40,7 +40,7 @@ namespace MindTouchMaterializedEnumerableAnalyzer {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("MindTouchMaterializedEnumerableAnalyzer.Resources", typeof(Resources).GetTypeInfo().Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("MindTouchRoslynAnalyzers.Resources", typeof(Resources).GetTypeInfo().Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -62,29 +62,56 @@ namespace MindTouchMaterializedEnumerableAnalyzer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to All cases of enum should be covered in switch statement.
+        /// </summary>
+        internal static string MindTouchEnumSwitchAnalyzerDescription {
+            get {
+                return ResourceManager.GetString("MindTouchEnumSwitchAnalyzerDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to switch on enum &apos;{0}&apos; is missing the following members: &apos;{1}&apos;.
+        /// </summary>
+        internal static string MindTouchEnumSwitchAnalyzerMessageFormat {
+            get {
+                return ResourceManager.GetString("MindTouchEnumSwitchAnalyzerMessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not at all cases of enum covered in switch statement.
+        /// </summary>
+        internal static string MindTouchEnumSwitchAnalyzerTitle {
+            get {
+                return ResourceManager.GetString("MindTouchEnumSwitchAnalyzerTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Collections that are passed as parameters or returned from functions should be materialized.
         /// </summary>
-        internal static string AnalyzerDescription {
+        internal static string MindTouchMaterializedEnumerableAnalyzerDescription {
             get {
-                return ResourceManager.GetString("AnalyzerDescription", resourceCulture);
+                return ResourceManager.GetString("MindTouchMaterializedEnumerableAnalyzerDescription", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Collection may or may not be materialized.
         /// </summary>
-        internal static string AnalyzerMessageFormat {
+        internal static string MindTouchMaterializedEnumerableAnalyzerMessageFormat {
             get {
-                return ResourceManager.GetString("AnalyzerMessageFormat", resourceCulture);
+                return ResourceManager.GetString("MindTouchMaterializedEnumerableAnalyzerMessageFormat", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Unmaterialized collection.
         /// </summary>
-        internal static string AnalyzerTitle {
+        internal static string MindTouchMaterializedEnumerableAnalyzerTitle {
             get {
-                return ResourceManager.GetString("AnalyzerTitle", resourceCulture);
+                return ResourceManager.GetString("MindTouchMaterializedEnumerableAnalyzerTitle", resourceCulture);
             }
         }
     }
