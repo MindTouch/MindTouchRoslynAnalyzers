@@ -1,18 +1,18 @@
 ﻿<?xml version="1.0"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
-    <id>MindTouchRoslynAnalyzers</id>
+    <id>MindTouch.RoslynAnalyzers</id>
     <version>1.0.0.0</version>
-    <title>MindTouchRoslynAnalyzers</title>
+    <title>MindTouch.RoslynAnalyzers</title>
     <authors>yurig@mindtouch.com</authors>
     <owners>yurig@mindtouch.com</owners>
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
     <projectUrl>https://github.com/MindTouch/MindTouchRoslynAnalyzers</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>MindTouchRoslynAnalyzers</description>
+    <description>MindTouch.RoslynAnalyzers</description>
     <releaseNotes>Moving all analyzers into 1 dll</releaseNotes>
     <copyright>Copyright</copyright>
-    <tags>MindTouchRoslynAnalyzers, analyzers</tags>
+    <tags>MindTouch.RoslynAnalyzers, analyzers</tags>
     <frameworkAssemblies>
       <frameworkAssembly assemblyName="System" targetFramework="" />
     </frameworkAssemblies>
