@@ -8,12 +8,12 @@ C# code analyzers built on the Roslyn compiler.
 MindTouchEnumSwitchAnalyzer
 ---------------------------
 
-Roslyn analyzer that ensures that all enum cases are handled when used inside a switch statement. [Read more.](MindTouchRoslynAnalyzers/MindTouchRoslynAnalyzers/MindTouchEnumSwitchAnalyzer/README.md)
+Roslyn analyzer that ensures that all enum cases are handled when used inside a switch statement. [Read more.](MindTouchRoslynAnalyzers/MindTouch.RoslynAnalyzers/MindTouchEnumSwitchAnalyzer/README.md)
 
 MindTouchMaterializedEnumerableAnalyzer
 ---------------------------------------
 
-Analyzer that ensures that any collections passed in as parameters to a function, or returned from a function are materialized. [Read more.](MindTouchRoslynAnalyzers/MindTouchRoslynAnalyzers/MindTouchMaterializedEnumerableAnalyzer/README.md)
+Analyzer that ensures that any collections passed in as parameters to a function, or returned from a function are materialized. [Read more.](MindTouch.RoslynAnalyzers/MindTouchRoslynAnalyzers/MindTouchMaterializedEnumerableAnalyzer/README.md)
 
 System Requirements
 -------------------
