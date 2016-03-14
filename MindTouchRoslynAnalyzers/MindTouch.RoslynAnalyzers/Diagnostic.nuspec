@@ -4,14 +4,15 @@
     <id>MindTouch.RoslynAnalyzers</id>
     <version>1.0.0.0</version>
     <title>MindTouch.RoslynAnalyzers</title>
-    <authors>yurig@mindtouch.com</authors>
-    <owners>yurig@mindtouch.com</owners>
+    <authors>MindTouch, Inc.</authors>
+    <owners>MindTouch</owners>
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
     <projectUrl>https://github.com/MindTouch/MindTouchRoslynAnalyzers</projectUrl>
+    <iconUrl>http://mindtouch.com/wp-content/uploads/2015/04/nugeticon.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>MindTouch.RoslynAnalyzers</description>
     <releaseNotes>Moving all analyzers into 1 dll</releaseNotes>
-    <copyright>Copyright</copyright>
+    <copyright>Copyright (c) 2006-2016 MindTouch, Inc.</copyright>
     <tags>MindTouch.RoslynAnalyzers, analyzers</tags>
     <frameworkAssemblies>
       <frameworkAssembly assemblyName="System" targetFramework="" />
