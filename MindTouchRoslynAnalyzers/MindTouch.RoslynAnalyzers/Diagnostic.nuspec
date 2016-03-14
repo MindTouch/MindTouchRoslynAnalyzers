@@ -8,6 +8,7 @@
     <owners>MindTouch</owners>
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
     <projectUrl>https://github.com/MindTouch/MindTouchRoslynAnalyzers</projectUrl>
+    <iconUrl>http://mindtouch.com/wp-content/uploads/2015/04/nugeticon.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>MindTouch.RoslynAnalyzers</description>
     <releaseNotes>Moving all analyzers into 1 dll</releaseNotes>
