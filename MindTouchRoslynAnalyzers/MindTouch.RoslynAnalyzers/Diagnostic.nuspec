@@ -11,7 +11,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>MindTouch.RoslynAnalyzers</description>
     <releaseNotes>Moving all analyzers into 1 dll</releaseNotes>
-    <copyright>Copyright (c) 2006-2015 MindTouch, Inc.</copyright>
+    <copyright>Copyright (c) 2006-2016 MindTouch, Inc.</copyright>
     <tags>MindTouch.RoslynAnalyzers, analyzers</tags>
     <frameworkAssemblies>
       <frameworkAssembly assemblyName="System" targetFramework="" />
